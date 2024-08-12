@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "create-colored",
+	"version": "${version}",
+	"name": "Create: colored",
+	"description": "Bringing color to everyone around the world!.",
+	"authors": [
+		"AzaSad"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/create-colored/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.azasad.createcolored.CreateColored"
+		],
+		"client": [
+			"com.azasad.createcolored.CreateColoredClient"
+		]
+	},
+	"mixins": [
+		"create-colored.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
