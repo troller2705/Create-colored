@@ -27,7 +27,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -78,7 +77,7 @@ public class ColoredGlassFluidPipeBlock extends GlassFluidPipeBlock {
         if (color != null) {
             if (!world.isClient)
                 world.playSound(null, pos, SoundEvents.ITEM_DYE_USE, SoundCategory.BLOCKS, 1.0f, 1.1f - world.random.nextFloat() * .2f);
-            applyDye(state, world, pos, hit.getPos(), color);
+            applyDye(state, world, pos, color);
             return ActionResult.SUCCESS;
         }
 
@@ -121,7 +120,7 @@ public class ColoredGlassFluidPipeBlock extends GlassFluidPipeBlock {
                         side, null, world, pos);
     }
 
-    public void applyDye(BlockState state, World world, BlockPos pos, Vec3d hit, @Nullable DyeColor color) {
+    public void applyDye(BlockState state, World world, BlockPos pos, @Nullable DyeColor color) {
         BlockState newState =
                 (color == null ? ColoredBlocks.DYED_GLASS_PIPES.get(DyeColor.WHITE) : ColoredBlocks.DYED_GLASS_PIPES.get(color)).getDefaultState();
 
@@ -129,8 +128,6 @@ public class ColoredGlassFluidPipeBlock extends GlassFluidPipeBlock {
         if (state != newState) {
             world.setBlockState(pos, newState);
         }
-
-        //TODO: Dye adjacent
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.azasad.createcolored.content.block;
 
 import com.azasad.createcolored.content.blockEntities.ColoredBlockEntities;
-import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.fluids.FluidPropagator;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
@@ -9,8 +8,8 @@ import com.simibubi.create.content.fluids.pipes.*;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Iterate;
-import io.github.fabricators_of_create.porting_lib.tags.Tags;
 import io.github.fabricators_of_create.porting_lib.util.TagUtil;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,91 +26,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-//Interesting classes:
-//SailBlock
-//Allblocks.DYED_SAILS
-//DyedBlockList
 public class ColoredFluidPipeBlock extends FluidPipeBlock {
 
     protected final DyeColor color;
+
     public ColoredFluidPipeBlock(Settings properties, DyeColor color) {
         super(properties);
         this.color = color;
-    }
-
-    @Override
-    public ActionResult onWrenched(BlockState state, ItemUsageContext context) {
-        if (tryRemoveBracket(context))
-            return ActionResult.SUCCESS;
-        World world = context.getWorld();
-        BlockPos pos = context.getBlockPos();
-        Direction clickedFace = context.getSide();
-        Direction.Axis axis = getAxis(world, pos, state);
-        if (axis == null) {
-            Vec3d clickLocation = context.getHitPos().subtract(pos.getX(), pos.getY(), pos.getZ());
-            double closest = Float.MAX_VALUE;
-            Direction argClosest = Direction.UP;
-            for (Direction direction : Iterate.directions) {
-                if (clickedFace.getAxis() == direction.getAxis())
-                    continue;
-                Vec3d centerOf = Vec3d.ofCenter(direction.getVector());
-                double distance = centerOf.squaredDistanceTo(clickLocation);
-                if (distance < closest) {
-                    closest = distance;
-                    argClosest = direction;
-                }
-            }
-            axis = argClosest.getAxis();
-        }
-        if (clickedFace.getAxis() == axis)
-            return ActionResult.PASS;
-        if (!world.isClient) {
-            withBlockEntityDo(world, pos, fpte -> fpte.getBehaviour(FluidTransportBehaviour.TYPE).interfaces.values().stream().filter(pc -> pc != null && pc.hasFlow()).findAny().ifPresent($ -> AllAdvancements.GLASS_PIPE.awardTo(context.getPlayer())));
-            FluidTransportBehaviour.cacheFlows(world, pos);
-            world.setBlockState(pos, ColoredBlocks.DYED_GLASS_PIPES.get(color).getDefaultState().with(GlassFluidPipeBlock.AXIS, axis).with(Properties.WATERLOGGED, state.get(Properties.WATERLOGGED)));
-            FluidTransportBehaviour.loadFlows(world, pos);
-        }
-        return ActionResult.SUCCESS;
-    }
-
-    @Nullable
-    private Direction.Axis getAxis(BlockView world, BlockPos pos, BlockState state) {
-        return FluidPropagator.getStraightPipeAxis(state);
-    }
-
-    @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult ray) {
-        ItemStack heldItem = player.getStackInHand(hand);
-        DyeColor color = TagUtil.getColorFromStack(heldItem);
-        if (color != null) {
-            if (!world.isClient)
-                world.playSound(null, pos, SoundEvents.ITEM_DYE_USE, SoundCategory.BLOCKS, 1.0f, 1.1f - world.random.nextFloat() * .2f);
-            applyDye(state, world, pos, ray.getPos(), color);
-            return ActionResult.SUCCESS;
-        }
-        return super.onUse(state, world, pos, player, hand, ray);
-    }
-
-    public void applyDye(BlockState state, World world, BlockPos pos, Vec3d hit, @Nullable DyeColor color) {
-        BlockState newState =
-                (color == null ? ColoredBlocks.DYED_PIPES.get(DyeColor.WHITE) : ColoredBlocks.DYED_PIPES.get(color)).getDefaultState();
-
-        //Update newState block state
-        newState = updateBlockState(newState, Direction.UP, null, world, pos);
-
-        //Dye the block itself
-        if(state != newState) {
-            world.setBlockState(pos,newState);
-            return;
-        }
-
-        //TODO: Dye adjacent
     }
 
     public static BlockState updateConnections(BlockRenderView world, BlockPos pos, BlockState state, @Nullable Direction ignored) {
@@ -149,6 +75,11 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock {
                     FluidPropagator.getStraightPipeAxis(neighbourState) == direction.getAxis();
         }
 
+        if (neighbourState.getBlock() instanceof ColoredGlassFluidPipeBlock glassPipe) {
+            if (!sameColor(state, ColoredBlocks.DYED_PIPES.get(glassPipe.color).getDefaultState()))
+                    return false;
+        }
+
         FluidTransportBehaviour transport = BlockEntityBehaviour.get(world, neighbourPos, FluidTransportBehaviour.TYPE);
         //If it can transport fluid, connect else we don't connect;
         if (transport == null)
@@ -168,7 +99,11 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock {
         return state.getBlock() instanceof ColoredFluidPipeBlock;
     }
 
-    public static boolean shouldDrawCasing(BlockRenderView world, BlockPos pos, BlockState state) {
+    public static boolean isColoredGlassPipe(BlockState state) {
+        return state.getBlock() instanceof ColoredGlassFluidPipeBlock;
+    }
+
+    public static boolean shouldDrawCasing(BlockState state) {
         if (!isColoredPipe(state))
             return false;
         for (Direction.Axis axis : Iterate.axes) {
@@ -190,6 +125,72 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock {
         if (!canConnectToColored(world, pos, state, direction))
             return true;
         return !isColoredPipe(facingState);
+    }
+
+    @Override
+    public ActionResult onWrenched(BlockState state, ItemUsageContext context) {
+        if (tryRemoveBracket(context))
+            return ActionResult.SUCCESS;
+        World world = context.getWorld();
+        BlockPos pos = context.getBlockPos();
+        Direction clickedFace = context.getSide();
+        Direction.Axis axis = getAxis(state);
+        if (axis == null) {
+            Vec3d clickLocation = context.getHitPos().subtract(pos.getX(), pos.getY(), pos.getZ());
+            double closest = Float.MAX_VALUE;
+            Direction argClosest = Direction.UP;
+            for (Direction direction : Iterate.directions) {
+                if (clickedFace.getAxis() == direction.getAxis())
+                    continue;
+                Vec3d centerOf = Vec3d.ofCenter(direction.getVector());
+                double distance = centerOf.squaredDistanceTo(clickLocation);
+                if (distance < closest) {
+                    closest = distance;
+                    argClosest = direction;
+                }
+            }
+            axis = argClosest.getAxis();
+        }
+        if (clickedFace.getAxis() == axis)
+            return ActionResult.PASS;
+        if (!world.isClient) {
+            withBlockEntityDo(world, pos, fpte -> fpte.getBehaviour(FluidTransportBehaviour.TYPE).interfaces.values().stream().filter(pc -> pc != null && pc.hasFlow()).findAny().ifPresent($ -> AllAdvancements.GLASS_PIPE.awardTo(context.getPlayer())));
+            FluidTransportBehaviour.cacheFlows(world, pos);
+            world.setBlockState(pos, ColoredBlocks.DYED_GLASS_PIPES.get(color).getDefaultState().with(GlassFluidPipeBlock.AXIS, axis).with(Properties.WATERLOGGED, state.get(Properties.WATERLOGGED)));
+            FluidTransportBehaviour.loadFlows(world, pos);
+        }
+        return ActionResult.SUCCESS;
+    }
+
+    @Nullable
+    private Direction.Axis getAxis(BlockState state) {
+        return FluidPropagator.getStraightPipeAxis(state);
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult ray) {
+        ItemStack heldItem = player.getStackInHand(hand);
+        DyeColor color = TagUtil.getColorFromStack(heldItem);
+        if (color != null) {
+            if (!world.isClient)
+                world.playSound(null, pos, SoundEvents.ITEM_DYE_USE, SoundCategory.BLOCKS, 1.0f, 1.1f - world.random.nextFloat() * .2f);
+            applyDye(state, world, pos, color);
+            return ActionResult.SUCCESS;
+        }
+        return super.onUse(state, world, pos, player, hand, ray);
+    }
+
+    public void applyDye(BlockState state, World world, BlockPos pos, @Nullable DyeColor color) {
+        BlockState newState =
+                (color == null ? ColoredBlocks.DYED_PIPES.get(DyeColor.WHITE) : ColoredBlocks.DYED_PIPES.get(color)).getDefaultState();
+
+        //Update newState block state
+        newState = updateBlockState(newState, Direction.UP, null, world, pos);
+
+        //Dye the block itself
+        if (state != newState) {
+            world.setBlockState(pos, newState);
+        }
     }
 
     @Override

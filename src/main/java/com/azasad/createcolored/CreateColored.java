@@ -1,6 +1,5 @@
 package com.azasad.createcolored;
 
-import com.azasad.createcolored.content.ColoredCreativeTabs;
 import com.azasad.createcolored.content.ColoredTags;
 import com.azasad.createcolored.content.block.ColoredBlocks;
 import com.azasad.createcolored.content.blockEntities.ColoredBlockEntities;
@@ -20,7 +19,6 @@ public class CreateColored implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Registering create-colored blocks!");
 		ColoredTags.initialize();
-		ColoredCreativeTabs.initialize();
 		ColoredBlockEntities.initialize();
 		ColoredBlocks.initialize();
 		REGISTRATE.register();

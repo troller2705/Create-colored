@@ -1,5 +1,6 @@
 package com.azasad.createcolored;
 
+import com.azasad.createcolored.content.ColoredCreativeTabs;
 import com.azasad.createcolored.content.models.ColoredPartials;
 import net.fabricmc.api.ClientModInitializer;
 
@@ -8,6 +9,7 @@ public class CreateColoredClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ColoredCreativeTabs.initialize();
         ColoredPartials.initialize();
     }
 }

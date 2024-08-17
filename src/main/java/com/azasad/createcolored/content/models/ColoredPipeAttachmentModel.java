@@ -1,14 +1,10 @@
 package com.azasad.createcolored.content.models;
 
-import com.azasad.createcolored.ColoredHelpers;
 import com.azasad.createcolored.content.block.ColoredFluidPipeBlock;
-import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
-import com.simibubi.create.content.fluids.PipeAttachmentModel;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Iterate;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
@@ -27,13 +23,16 @@ import java.util.function.Supplier;
 @SuppressWarnings("deprecation")
 public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
     private final DyeColor color;
+
     public ColoredPipeAttachmentModel(BakedModel template, DyeColor color) {
         this.color = color;
         wrapped = template;
     }
 
     @Override
-    public boolean isVanillaAdapter() { return false; }
+    public boolean isVanillaAdapter() {
+        return false;
+    }
 
     @Override
     public void emitBlockQuads(BlockRenderView world, BlockState state, BlockPos pos,
@@ -56,7 +55,7 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
             data.putBracket(bracket.getBracket());
         }
 
-        data.setEncased(ColoredFluidPipeBlock.shouldDrawCasing(world, pos, state));
+        data.setEncased(ColoredFluidPipeBlock.shouldDrawCasing(state));
 
         super.emitBlockQuads(world, state, pos, randomSupplier, context);
         addQuads(world, state, pos, randomSupplier, context, data);
@@ -68,25 +67,25 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
         for (Direction d : Iterate.directions) {
             FluidTransportBehaviour.AttachmentTypes type = pipeData.getAttachment(d);
             for (FluidTransportBehaviour.AttachmentTypes.ComponentPartials partial : type.partials) {
-                ((FabricBakedModel) ColoredPartials.COLORED_PIPE_ATTACHMENTS.get(partial)
+                ColoredPartials.COLORED_PIPE_ATTACHMENTS.get(partial)
                         .get(color)
                         .get(d.asString())
-                        .get())
+                        .get()
                         .emitBlockQuads(world, state, pos, randomSupplier, context);
             }
         }
 
         if (pipeData.isEncased())
-            ((FabricBakedModel) ColoredPartials.COLORED_FLUID_PIPE_CASINGS.get(color).get())
+            ColoredPartials.COLORED_FLUID_PIPE_CASINGS.get(color).get()
                     .emitBlockQuads(world, state, pos, randomSupplier, context);
         BakedModel bracket = pipeData.getBracket();
-        if (bracket != null){
-            ((FabricBakedModel) bracket).emitBlockQuads(world, state, pos, randomSupplier, context);
+        if (bracket != null) {
+            bracket.emitBlockQuads(world, state, pos, randomSupplier, context);
         }
     }
 
     private static class ColoredPipeModelData {
-        private FluidTransportBehaviour.AttachmentTypes[] attachments;
+        private final FluidTransportBehaviour.AttachmentTypes[] attachments;
         private boolean encased;
         private BakedModel bracket;
 
@@ -115,12 +114,12 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
             return attachments[face.getId()];
         }
 
-        public void setEncased(Boolean encased) {
-            this.encased = encased;
-        }
-
         public boolean isEncased() {
             return this.encased;
+        }
+
+        public void setEncased(Boolean encased) {
+            this.encased = encased;
         }
     }
 }

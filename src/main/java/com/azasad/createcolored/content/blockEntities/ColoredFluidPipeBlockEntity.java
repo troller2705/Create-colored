@@ -52,20 +52,20 @@ public class ColoredFluidPipeBlockEntity extends FluidPipeBlockEntity {
             BlockPos offsetPos = pos.offset(direction);
             BlockState otherState = world.getBlockState(offsetPos);
 
-            if(state.getBlock() instanceof EncasedPipeBlock && attachment != AttachmentTypes.DRAIN)
+            if (state.getBlock() instanceof EncasedPipeBlock && attachment != AttachmentTypes.DRAIN)
                 return AttachmentTypes.NONE;
 
-            if(attachment == AttachmentTypes.RIM && !ColoredFluidPipeBlock.isColoredPipe(otherState) &&
+            if (attachment == AttachmentTypes.RIM && !ColoredFluidPipeBlock.isColoredPipe(otherState) &&
                     !AllBlocks.MECHANICAL_PUMP.has(otherState) && !AllBlocks.ENCASED_FLUID_PIPE.has(otherState)) {
                 FluidTransportBehaviour pipeBehaviour = BlockEntityBehaviour.get(world, offsetPos, FluidTransportBehaviour.TYPE);
-                if(pipeBehaviour != null)
-                    if(pipeBehaviour.canHaveFlowToward(otherState, direction.getOpposite()))
+                if (pipeBehaviour != null)
+                    if (pipeBehaviour.canHaveFlowToward(otherState, direction.getOpposite()))
                         return AttachmentTypes.CONNECTION;
             }
 
-            if(attachment == AttachmentTypes.RIM && !ColoredFluidPipeBlock.shouldDrawRim(world, pos, state, direction))
+            if (attachment == AttachmentTypes.RIM && !ColoredFluidPipeBlock.shouldDrawRim(world, pos, state, direction))
                 return AttachmentTypes.CONNECTION;
-            if(attachment == AttachmentTypes.NONE && state.get(ColoredFluidPipeBlock.FACING_PROPERTIES.get(direction)))
+            if (attachment == AttachmentTypes.NONE && state.get(ColoredFluidPipeBlock.FACING_PROPERTIES.get(direction)))
                 return AttachmentTypes.CONNECTION;
 
             return attachment;

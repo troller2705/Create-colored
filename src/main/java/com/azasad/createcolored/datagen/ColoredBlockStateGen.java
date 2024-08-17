@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableMap;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
-import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.simibubi.create.foundation.utility.Pointing;
 import com.tterrag.registrate.providers.DataGenContext;
@@ -17,13 +16,11 @@ import io.github.fabricators_of_create.porting_lib.models.generators.block.Multi
 import net.minecraft.block.Block;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,18 +43,6 @@ public class ColoredBlockStateGen {
             String R = "r";
 
             List<String> orientations = ImmutableList.of(LU, RU, LD, RD, LR, UD, U, D, L, R);
-            Map<String, Pair<Integer, Integer>> uvs = ImmutableMap.<String, Pair<Integer, Integer>>builder()
-                    .put(LU, Pair.of(12, 4))
-                    .put(RU, Pair.of(8, 4))
-                    .put(LD, Pair.of(12, 0))
-                    .put(RD, Pair.of(8, 0))
-                    .put(LR, Pair.of(4, 8))
-                    .put(UD, Pair.of(0, 8))
-                    .put(U, Pair.of(4, 4))
-                    .put(D, Pair.of(0, 0))
-                    .put(L, Pair.of(4, 0))
-                    .put(R, Pair.of(0, 4))
-                    .build();
 
             Map<Pair<String, Axis>, ModelFile> coreModels = new HashMap<>();
             for (Axis axis : Iterate.axes) {
@@ -95,7 +80,7 @@ public class ColoredBlockStateGen {
                     .texture("0", "block/pipes/" + colorName);
 
             //Connection
-            for(Direction d : Iterate.directions) {
+            for (Direction d : Iterate.directions) {
                 String sourceModel = path + "/connection/" + d.getName();
                 String outputModel = coloredPath + "/connection/" + d.getName();
 
@@ -104,7 +89,7 @@ public class ColoredBlockStateGen {
             }
 
             //Drain
-            for(Direction d : Iterate.directions) {
+            for (Direction d : Iterate.directions) {
                 String sourceModel = path + "/drain/" + d.getName();
                 String outputModel = coloredPath + "/drain/" + d.getName();
 
@@ -113,7 +98,7 @@ public class ColoredBlockStateGen {
             }
 
             //Rim
-            for(Direction d : Iterate.directions) {
+            for (Direction d : Iterate.directions) {
                 String sourceModel = path + "/rim/" + d.getName();
                 String outputModel = coloredPath + "/rim/" + d.getName();
 
@@ -122,7 +107,7 @@ public class ColoredBlockStateGen {
             }
 
             //Rim_connector
-            for(Direction d : Iterate.directions) {
+            for (Direction d : Iterate.directions) {
                 String sourceModel = path + "/rim_connector/" + d.getName();
                 String outputModel = coloredPath + "/rim_connector/" + d.getName();
 
