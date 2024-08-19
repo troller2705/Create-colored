@@ -1,6 +1,7 @@
 package com.azasad.createcolored.content.block;
 
 import com.azasad.createcolored.content.blockEntities.ColoredBlockEntities;
+import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.fluids.FluidPropagator;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
@@ -31,13 +32,16 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class ColoredFluidPipeBlock extends FluidPipeBlock {
-
+public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlock{
     protected final DyeColor color;
 
     public ColoredFluidPipeBlock(Settings properties, DyeColor color) {
         super(properties);
         this.color = color;
+    }
+
+    public DyeColor getColor() {
+        return this.color;
     }
 
     public static BlockState updateConnections(BlockRenderView world, BlockPos pos, BlockState state, @Nullable Direction ignored) {

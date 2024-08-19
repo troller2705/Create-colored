@@ -1,6 +1,7 @@
 package com.azasad.createcolored.content.block;
 
 import com.azasad.createcolored.content.blockEntities.ColoredBlockEntities;
+import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;

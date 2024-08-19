@@ -1,6 +1,7 @@
 package com.azasad.createcolored.content.models;
 
 import com.azasad.createcolored.content.block.ColoredFluidPipeBlock;
+import com.azasad.createcolored.content.block.IColoredBlock;
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -22,10 +23,8 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
 public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
-    private final DyeColor color;
 
-    public ColoredPipeAttachmentModel(BakedModel template, DyeColor color) {
-        this.color = color;
+    public ColoredPipeAttachmentModel(BakedModel template) {
         wrapped = template;
     }
 
@@ -57,6 +56,11 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
 
         data.setEncased(ColoredFluidPipeBlock.shouldDrawCasing(state));
 
+        //Get color
+        if(state.getBlock() instanceof IColoredBlock pipe) {
+            data.setColor(pipe.getColor());
+        }
+
         super.emitBlockQuads(world, state, pos, randomSupplier, context);
         addQuads(world, state, pos, randomSupplier, context, data);
     }
@@ -68,7 +72,7 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
             FluidTransportBehaviour.AttachmentTypes type = pipeData.getAttachment(d);
             for (FluidTransportBehaviour.AttachmentTypes.ComponentPartials partial : type.partials) {
                 ColoredPartials.COLORED_PIPE_ATTACHMENTS.get(partial)
-                        .get(color)
+                        .get(pipeData.getColor())
                         .get(d.asString())
                         .get()
                         .emitBlockQuads(world, state, pos, randomSupplier, context);
@@ -76,7 +80,7 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
         }
 
         if (pipeData.isEncased())
-            ColoredPartials.COLORED_FLUID_PIPE_CASINGS.get(color).get()
+            ColoredPartials.COLORED_FLUID_PIPE_CASINGS.get(pipeData.getColor()).get()
                     .emitBlockQuads(world, state, pos, randomSupplier, context);
         BakedModel bracket = pipeData.getBracket();
         if (bracket != null) {
@@ -86,6 +90,7 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
 
     private static class ColoredPipeModelData {
         private final FluidTransportBehaviour.AttachmentTypes[] attachments;
+        private DyeColor color;
         private boolean encased;
         private BakedModel bracket;
 
@@ -101,6 +106,9 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
                         .getModel(state);
             }
         }
+
+        public DyeColor getColor() { return this.color; }
+        public void setColor(DyeColor color) { this.color = color; }
 
         public BakedModel getBracket() {
             return this.bracket;

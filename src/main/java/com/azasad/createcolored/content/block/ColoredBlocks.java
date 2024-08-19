@@ -38,7 +38,7 @@ public class ColoredBlocks {
                 .initialProperties(SharedProperties::copperMetal)
                 .properties(p -> p.mapColor(dyeColor.getMapColor()).solid())
                 .transform(pickaxeOnly())
-                .onRegister(CreateRegistrate.blockModel(() -> (model) -> new ColoredPipeAttachmentModel(model, dyeColor)))
+                .onRegister(CreateRegistrate.blockModel(() -> ColoredPipeAttachmentModel::new))
                 .blockstate(ColoredBlockStateGen.coloredPipe(dyeColor))
                 .item()
                 .model((c, p) -> p.withExistingParent(c.getName(), Create.asResource("item/fluid_pipe")).texture("1", "block/pipes/" + colorName))
@@ -74,7 +74,7 @@ public class ColoredBlocks {
                                     .rotationY(axis == Direction.Axis.X ? 90 : 0)
                                     .build();
                         }, Properties.WATERLOGGED))
-                .onRegister(CreateRegistrate.blockModel(() -> (model) -> new ColoredPipeAttachmentModel(model, dyeColor)))
+                .onRegister(CreateRegistrate.blockModel(() -> ColoredPipeAttachmentModel::new))
                 .loot((p, b) -> p.addDrop(b, DYED_PIPES.get(dyeColor).get()))
                 .register();
     });

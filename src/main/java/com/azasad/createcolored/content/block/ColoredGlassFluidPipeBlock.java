@@ -1,6 +1,7 @@
 package com.azasad.createcolored.content.block;
 
 import com.azasad.createcolored.content.blockEntities.ColoredBlockEntities;
+import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.fluids.FluidPropagator;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
@@ -38,12 +39,16 @@ import java.util.Optional;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ColoredGlassFluidPipeBlock extends GlassFluidPipeBlock {
+public class ColoredGlassFluidPipeBlock extends GlassFluidPipeBlock implements IColoredBlock{
     protected final DyeColor color;
 
     public ColoredGlassFluidPipeBlock(Settings properties, DyeColor color) {
         super(properties);
         this.color = color;
+    }
+
+    public DyeColor getColor() {
+        return this.color;
     }
 
     public boolean tryRemoveBracket(ItemUsageContext context) {
