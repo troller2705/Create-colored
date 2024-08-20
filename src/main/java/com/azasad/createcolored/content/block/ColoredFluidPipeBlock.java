@@ -1,7 +1,6 @@
 package com.azasad.createcolored.content.block;
 
 import com.azasad.createcolored.content.blockEntities.ColoredBlockEntities;
-import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.fluids.FluidPropagator;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
@@ -10,7 +9,6 @@ import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.Iterate;
 import io.github.fabricators_of_create.porting_lib.util.TagUtil;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,16 +30,12 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlock{
+public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlock {
     protected final DyeColor color;
 
     public ColoredFluidPipeBlock(Settings properties, DyeColor color) {
         super(properties);
         this.color = color;
-    }
-
-    public DyeColor getColor() {
-        return this.color;
     }
 
     public static BlockState updateConnections(BlockRenderView world, BlockPos pos, BlockState state, @Nullable Direction ignored) {
@@ -81,7 +75,7 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
 
         if (neighbourState.getBlock() instanceof ColoredGlassFluidPipeBlock glassPipe) {
             if (!sameColor(state, ColoredBlocks.DYED_PIPES.get(glassPipe.color).getDefaultState()))
-                    return false;
+                return false;
         }
 
         FluidTransportBehaviour transport = BlockEntityBehaviour.get(world, neighbourPos, FluidTransportBehaviour.TYPE);
@@ -129,6 +123,10 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
         if (!canConnectToColored(world, pos, state, direction))
             return true;
         return !isColoredPipe(facingState);
+    }
+
+    public DyeColor getColor() {
+        return this.color;
     }
 
     @Override

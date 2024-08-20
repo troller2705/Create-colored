@@ -2,10 +2,7 @@ package com.azasad.createcolored.content;
 
 import com.azasad.createcolored.CreateColored;
 import com.simibubi.create.foundation.utility.Lang;
-import net.minecraft.block.Block;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.tag.TagKey;
@@ -19,18 +16,6 @@ public class ColoredTags {
 
     public static <T> TagKey<T> forgeTag(Registry<T> registry, String path) {
         return optionalTag(registry, new Identifier("c", path));
-    }
-
-    public static TagKey<Block> forgeBlockTag(String path) {
-        return forgeTag(Registries.BLOCK, path);
-    }
-
-    public static TagKey<Item> forgeItemTag(String path) {
-        return forgeTag(Registries.ITEM, path);
-    }
-
-    public static TagKey<Fluid> forgeFluidTag(String path) {
-        return forgeTag(Registries.FLUID, path);
     }
 
     public enum NameSpace {
@@ -82,16 +67,6 @@ public class ColoredTags {
             tag = optionalTag(Registries.ITEM, id);
 
             this.alwaysDatagen = alwaysDatagen;
-        }
-
-        @SuppressWarnings("deprecation")
-        public boolean matches(Item item) {
-            return item.getRegistryEntry()
-                    .isIn(tag);
-        }
-
-        public boolean matches(ItemStack stack) {
-            return stack.isIn(tag);
         }
 
         private static void initialize() {}
