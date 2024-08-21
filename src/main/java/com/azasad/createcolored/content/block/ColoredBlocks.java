@@ -50,7 +50,7 @@ public class ColoredBlocks {
 
                     builder.offerTo(p, new Identifier(CreateColored.MOD_ID, c.getName()));
                 })
-                .tag(ColoredTags.ColoredItemTags.PIPES.tag)
+                .tag(ColoredTags.ColoredItemTags.COLORED_PIPES.tag)
                 .build()
                 .register();
     });
