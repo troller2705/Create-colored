@@ -1,8 +1,11 @@
 package com.azasad.createcolored.content.block;
 
 import com.azasad.createcolored.ColoredHelpers;
+import com.azasad.createcolored.ColoredRegistrate;
 import com.azasad.createcolored.CreateColored;
 import com.azasad.createcolored.content.ColoredTags;
+import com.azasad.createcolored.content.item.ColoredFluidTankItem;
+import com.azasad.createcolored.content.models.ColoredFluidTankModel;
 import com.azasad.createcolored.content.models.ColoredPipeAttachmentModel;
 import com.azasad.createcolored.datagen.ColoredBlockStateGen;
 import com.simibubi.create.AllBlocks;
@@ -12,6 +15,8 @@ import com.simibubi.create.content.decoration.encasing.EncasedCTBehaviour;
 import com.simibubi.create.content.decoration.encasing.EncasingRegistry;
 import com.simibubi.create.content.fluids.PipeAttachmentModel;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
+import com.simibubi.create.content.fluids.tank.FluidTankModel;
+import com.simibubi.create.content.redstone.displayLink.source.BoilerDisplaySource;
 import com.simibubi.create.foundation.block.DyedBlockList;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.SharedProperties;
@@ -26,11 +31,28 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
+import static com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours.assignDataBehaviour;
 import static com.simibubi.create.foundation.data.TagGen.axeOrPickaxe;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
 public class ColoredBlocks {
     private static final CreateRegistrate REGISTRATE = CreateColored.REGISTRATE;
+
+    public static final DyedBlockList<ColoredFluidTankBlock> DYED_FLUID_TANKS = new DyedBlockList<>(dyecolor -> {
+       String colorName = dyecolor.getName();
+       return REGISTRATE.block(colorName + "_fluid_tank", settings -> new ColoredFluidTankBlock(settings, dyecolor))
+               .initialProperties(SharedProperties::copperMetal)
+               .properties(p -> p.nonOpaque().solidBlock((p1, p2, p3) -> true))
+               .transform(pickaxeOnly())
+               .blockstate(ColoredBlockStateGen.coloredTank(dyecolor))
+               .onRegister(ColoredRegistrate.coloredBlockModel(() -> ColoredFluidTankModel::standard, dyecolor))
+               .onRegister(assignDataBehaviour(new BoilerDisplaySource(), "boiler_status"))
+               .addLayer(() -> RenderLayer::getCutoutMipped)
+               .item(ColoredFluidTankItem::new).build()
+               //.model(AssetLookup.customBlockItemModel("_", "block_single_window"))
+               //.build()
+               .register();
+    });
 
     public static final DyedBlockList<ColoredFluidPipeBlock> DYED_PIPES = new DyedBlockList<>(dyeColor -> {
         String colorName = dyeColor.getName();
@@ -67,7 +89,7 @@ public class ColoredBlocks {
                             Direction.Axis axis = state.get(Properties.AXIS);
                             return ConfiguredModel.builder()
                                     .modelFile(p.models().
-                                            withExistingParent("block/" + colorName + "_fluid_pipe/window", Create.asResource("block/fluid_pipe/window"))
+                                            withExistingParent("block/colored_fluid_pipe/" + colorName + "_fluid_pipe/window", Create.asResource("block/fluid_pipe/window"))
                                             .texture("0", "block/glass_fluid_pipe/" + colorName))
                                     .uvLock(false)
                                     .rotationX(axis == Direction.Axis.Y ? 0 : 90)

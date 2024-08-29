@@ -23,7 +23,7 @@ public class ColoredPartials {
 
     static {
         for (DyeColor color : DyeColor.values()) {
-            COLORED_FLUID_PIPE_CASINGS.put(color, block(color.getName() + "_fluid_pipe/casing"));
+            COLORED_FLUID_PIPE_CASINGS.put(color, block("colored_fluid_pipe/" + color.getName() + "_fluid_pipe/casing"));
         }
     }
 
@@ -36,7 +36,7 @@ public class ColoredPartials {
                 Map<String, PartialModel> map = new HashMap<>();
                 for (Direction d : Iterate.directions) {
                     String asId = Lang.asId(type.name());
-                    map.put(d.asString(), block(color.getName() + "_fluid_pipe/" + asId + "/" + Lang.asId(d.asString())));
+                    map.put(d.asString(), block("colored_fluid_pipe/" + color.getName() + "_fluid_pipe/" + asId + "/" + Lang.asId(d.asString())));
                 }
                 colorMap.put(color, map);
             }

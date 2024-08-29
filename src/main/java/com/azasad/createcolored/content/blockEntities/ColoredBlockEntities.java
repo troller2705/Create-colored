@@ -2,9 +2,14 @@ package com.azasad.createcolored.content.blockEntities;
 
 import com.azasad.createcolored.CreateColored;
 import com.azasad.createcolored.content.block.ColoredBlocks;
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.fluids.pipes.TransparentStraightPipeRenderer;
+import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
+import com.simibubi.create.content.fluids.tank.FluidTankRenderer;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
+
+import static com.simibubi.create.Create.REGISTRATE;
 
 public class ColoredBlockEntities {
     private static final CreateRegistrate REGISTRATE = CreateColored.REGISTRATE;
@@ -12,6 +17,12 @@ public class ColoredBlockEntities {
     public static final BlockEntityEntry<ColoredFluidPipeBlockEntity> COLORED_FLUID_PIPE_ENTITY = REGISTRATE
             .blockEntity("colored_fluid_pipe", ColoredFluidPipeBlockEntity::new)
             .validBlocks(ColoredBlocks.DYED_PIPES.toArray())
+            .register();
+
+    public static final BlockEntityEntry<ColoredFluidTankBlockEntity> COLORED_FLUID_TANK_ENTITY = REGISTRATE
+            .blockEntity("fluid_tank", ColoredFluidTankBlockEntity::new)
+            .validBlocks(ColoredBlocks.DYED_FLUID_TANKS.toArray())
+            .renderer(() -> FluidTankRenderer::new)
             .register();
 
     public static final BlockEntityEntry<ColoredFluidPipeBlockEntity> COLORED_ENCASED_FLUID_PIPE = REGISTRATE

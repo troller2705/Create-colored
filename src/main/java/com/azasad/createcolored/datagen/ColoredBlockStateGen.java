@@ -1,16 +1,19 @@
 package com.azasad.createcolored.datagen;
 
 import com.azasad.createcolored.content.block.ColoredFluidPipeBlock;
+import com.azasad.createcolored.content.block.ColoredFluidTankBlock;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
+import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.simibubi.create.foundation.utility.Pointing;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import io.github.fabricators_of_create.porting_lib.models.generators.ConfiguredModel;
 import io.github.fabricators_of_create.porting_lib.models.generators.ModelFile;
 import io.github.fabricators_of_create.porting_lib.models.generators.block.MultiPartBlockStateBuilder;
 import net.minecraft.block.Block;
@@ -25,10 +28,61 @@ import java.util.List;
 import java.util.Map;
 
 public class ColoredBlockStateGen {
+    public static <P extends ColoredFluidTankBlock> NonNullBiConsumer<DataGenContext<Block, P>, RegistrateBlockstateProvider> coloredTank(DyeColor color) {
+        return (c, p) -> {
+            String colorName = color.getName();
+            String coloredPath = "block/colored_fluid_tank/" + c.getName() + "/";
+            String path = "block/fluid_tank/";
+
+//            List<String> prefixes = ImmutableList.of("bottom","middle","single","top");
+//            List<String> alts = ImmutableList.of("","_window","_window_ne", "_window_nw", "_window_se", "_window_sw");
+//
+//            //Create models
+//            for(String prefix : prefixes) {
+//                for(String alt : alts){
+//                    String modelName = "block_" + prefix + alt;
+//                    p.models().withExistingParent(coloredPath + modelName,Create.asResource(path + modelName));
+//                }
+//            }
+
+            p.getVariantBuilder(c.getEntry())
+                    .forAllStates(state -> {
+                        Boolean top = state.get(ColoredFluidTankBlock.TOP);
+                        Boolean bottom = state.get(ColoredFluidTankBlock.BOTTOM);
+                        FluidTankBlock.Shape shape = state.get(ColoredFluidTankBlock.SHAPE);
+
+                        String shapeName = "middle";
+                        if(top && bottom)
+                            shapeName = "single";
+                        else if(top)
+                            shapeName = "top";
+                        else if(bottom)
+                            shapeName = "bottom";
+
+                        //Create model
+                        String modelName = "block_" + shapeName + (shape == FluidTankBlock.Shape.PLAIN ? "" : "_" + shape.asString());
+                        ModelFile model = p.models().withExistingParent(coloredPath + modelName, Create.asResource(path + modelName))
+                                .texture("0", p.modLoc("block/fluid_tank_top/" + colorName))
+                                .texture("1", p.modLoc("block/fluid_tank/" + colorName))
+                                .texture("3", p.modLoc("block/fluid_tank_window/" + colorName))
+                                .texture("4", p.modLoc("block/fluid_tank_inner/" + colorName))
+                                .texture("5", p.modLoc("block/fluid_tank_window_single/" + colorName))
+                                .texture("particle", p.modLoc("block/fluid_tank/" + colorName));
+
+
+
+                        return ConfiguredModel.builder()
+                                .modelFile(model)
+                                .build();
+                    });
+
+        };
+    }
+
     public static <P extends ColoredFluidPipeBlock> NonNullBiConsumer<DataGenContext<Block, P>, RegistrateBlockstateProvider> coloredPipe(DyeColor color) {
         return (c, p) -> {
             String colorName = color.getName();
-            String coloredPath = "block/" + c.getName();
+            String coloredPath = "block/colored_fluid_pipe/" + c.getName();
             String path = "block/fluid_pipe";
 
             String LU = "lu";
@@ -145,7 +199,7 @@ public class ColoredBlockStateGen {
     public static <P extends EncasedPipeBlock> NonNullBiConsumer<DataGenContext<Block, P>, RegistrateBlockstateProvider> encasedPipe(DyeColor color) {
         return (c, p) -> {
             String colorName = color.getName();
-            ModelFile open = p.models().withExistingParent("block/" + colorName + "_encased_fluid_pipe/block_open", Create.asResource("block/encased_fluid_pipe/block_open"))
+            ModelFile open = p.models().withExistingParent("block/encased_fluid_pipe/" + colorName + "_encased_fluid_pipe/block_open", Create.asResource("block/encased_fluid_pipe/block_open"))
                     .texture("0", "block/encased_pipe/" + colorName)
                     .texture("particle", "block/encased_pipe/" + colorName);
             ModelFile flat = p.models().getExistingFile(Create.asResource("block/encased_fluid_pipe/block_flat"));
