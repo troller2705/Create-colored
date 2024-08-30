@@ -23,9 +23,10 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
 public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
-
-    public ColoredPipeAttachmentModel(BakedModel template) {
+    private final DyeColor color;
+    public ColoredPipeAttachmentModel(BakedModel template, DyeColor color) {
         wrapped = template;
+        this.color = color;
     }
 
     @Override
@@ -56,11 +57,6 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
 
         data.setEncased(ColoredFluidPipeBlock.shouldDrawCasing(state));
 
-        //Get color
-        if(state.getBlock() instanceof IColoredBlock pipe) {
-            data.setColor(pipe.getColor());
-        }
-
         super.emitBlockQuads(world, state, pos, randomSupplier, context);
         addQuads(world, state, pos, randomSupplier, context, data);
     }
@@ -72,7 +68,7 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
             FluidTransportBehaviour.AttachmentTypes type = pipeData.getAttachment(d);
             for (FluidTransportBehaviour.AttachmentTypes.ComponentPartials partial : type.partials) {
                 ColoredPartials.COLORED_PIPE_ATTACHMENTS.get(partial)
-                        .get(pipeData.getColor())
+                        .get(color)
                         .get(d.asString())
                         .get()
                         .emitBlockQuads(world, state, pos, randomSupplier, context);
@@ -80,7 +76,7 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
         }
 
         if (pipeData.isEncased())
-            ColoredPartials.COLORED_FLUID_PIPE_CASINGS.get(pipeData.getColor()).get()
+            ColoredPartials.COLORED_FLUID_PIPE_CASINGS.get(color).get()
                     .emitBlockQuads(world, state, pos, randomSupplier, context);
         BakedModel bracket = pipeData.getBracket();
         if (bracket != null) {
@@ -106,9 +102,6 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
                         .getModel(state);
             }
         }
-
-        public DyeColor getColor() { return this.color; }
-        public void setColor(DyeColor color) { this.color = color; }
 
         public BakedModel getBracket() {
             return this.bracket;

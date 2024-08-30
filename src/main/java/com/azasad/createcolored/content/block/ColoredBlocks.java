@@ -13,9 +13,7 @@ import com.simibubi.create.AllSpriteShifts;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.decoration.encasing.EncasedCTBehaviour;
 import com.simibubi.create.content.decoration.encasing.EncasingRegistry;
-import com.simibubi.create.content.fluids.PipeAttachmentModel;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
-import com.simibubi.create.content.fluids.tank.FluidTankModel;
 import com.simibubi.create.content.redstone.displayLink.source.BoilerDisplaySource;
 import com.simibubi.create.foundation.block.DyedBlockList;
 import com.simibubi.create.foundation.data.CreateRegistrate;
@@ -60,7 +58,7 @@ public class ColoredBlocks {
                 .initialProperties(SharedProperties::copperMetal)
                 .properties(p -> p.mapColor(dyeColor.getMapColor()).solid())
                 .transform(pickaxeOnly())
-                .onRegister(CreateRegistrate.blockModel(() -> ColoredPipeAttachmentModel::new))
+                .onRegister(ColoredRegistrate.coloredBlockModel(() -> ColoredPipeAttachmentModel::new, dyeColor))
                 .blockstate(ColoredBlockStateGen.coloredPipe(dyeColor))
                 .item()
                 .model((c, p) -> p.withExistingParent(c.getName(), Create.asResource("item/fluid_pipe")).texture("1", "block/pipes/" + colorName))
@@ -96,7 +94,7 @@ public class ColoredBlocks {
                                     .rotationY(axis == Direction.Axis.X ? 90 : 0)
                                     .build();
                         }, Properties.WATERLOGGED))
-                .onRegister(CreateRegistrate.blockModel(() -> ColoredPipeAttachmentModel::new))
+                .onRegister(ColoredRegistrate.coloredBlockModel(() -> ColoredPipeAttachmentModel::new, dyeColor))
                 .loot((p, b) -> p.addDrop(b, DYED_PIPES.get(dyeColor).get()))
                 .register();
     });
@@ -111,7 +109,7 @@ public class ColoredBlocks {
                 .onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(AllSpriteShifts.COPPER_CASING)))
                 .onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, AllSpriteShifts.COPPER_CASING,
                         (s, f) -> !s.get(EncasedPipeBlock.FACING_TO_PROPERTY_MAP.get(f)))))
-                .onRegister(CreateRegistrate.blockModel(() -> PipeAttachmentModel::new))
+                .onRegister(ColoredRegistrate.coloredBlockModel(() -> ColoredPipeAttachmentModel::new, dyeColor))
                 .loot((p, b) -> p.addDrop(b, DYED_PIPES.get(dyeColor).get()))
                 .transform(EncasingRegistry.addVariantTo(DYED_PIPES.get(dyeColor)))
                 .register();

@@ -1,11 +1,15 @@
 package com.azasad.createcolored.content.block;
 
 import com.azasad.createcolored.content.blockEntities.ColoredBlockEntities;
+import com.azasad.createcolored.content.blockEntities.ColoredFluidTankBlockEntity;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.math.BlockPos;
 
 public class ColoredFluidTankBlock extends FluidTankBlock {
     protected final DyeColor color;
