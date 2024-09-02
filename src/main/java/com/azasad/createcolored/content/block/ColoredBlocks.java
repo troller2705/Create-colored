@@ -46,9 +46,26 @@ public class ColoredBlocks {
                .onRegister(ColoredRegistrate.coloredBlockModel(() -> ColoredFluidTankModel::standard, dyecolor))
                .onRegister(assignDataBehaviour(new BoilerDisplaySource(), "boiler_status"))
                .addLayer(() -> RenderLayer::getCutoutMipped)
-               .item(ColoredFluidTankItem::new).build()
-               //.model(AssetLookup.customBlockItemModel("_", "block_single_window"))
-               //.build()
+               .item(ColoredFluidTankItem::new)
+//               .lang(colorName + " Fluid Tank")
+               .model((c,p) -> {
+                   p.withExistingParent(c.getName(), Create.asResource("item/fluid_tank"))
+                           .texture("0", p.modLoc("block/fluid_tank_top/" + colorName))
+                           .texture("1", p.modLoc("block/fluid_tank/" + colorName))
+                           .texture("3", p.modLoc("block/fluid_tank_window/" + colorName))
+                           .texture("4", p.modLoc("block/fluid_tank_inner/" + colorName))
+                           .texture("5", p.modLoc("block/fluid_tank_window_single/" + colorName));
+               })
+               .recipe((c,p) -> {
+                   ShapelessRecipeJsonBuilder builder = ShapelessRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, c.get(), 1)
+                           .input(ColoredHelpers.getDyeItem(dyecolor))
+                           .input(AllBlocks.FLUID_TANK.asItem())
+                           .criterion("has_tank", InventoryChangedCriterion.Conditions.items(AllBlocks.FLUID_TANK));
+
+                   builder.offerTo(p, CreateColored.asResource(c.getName()));
+               })
+               .tag(ColoredTags.ColoredItemTags.COLORED_TANKS.tag)
+               .build()
                .register();
     });
 
@@ -68,7 +85,7 @@ public class ColoredBlocks {
                             .input(AllBlocks.FLUID_PIPE.asItem())
                             .criterion("has_pipe", InventoryChangedCriterion.Conditions.items(AllBlocks.FLUID_PIPE));
 
-                    builder.offerTo(p, new Identifier(CreateColored.MOD_ID, c.getName()));
+                    builder.offerTo(p, CreateColored.asResource(c.getName()));
                 })
                 .tag(ColoredTags.ColoredItemTags.COLORED_PIPES.tag)
                 .build()

@@ -1,5 +1,6 @@
 package com.azasad.createcolored.content.block;
 
+import com.azasad.createcolored.CreateColored;
 import com.azasad.createcolored.content.blockEntities.ColoredBlockEntities;
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.fluids.FluidPropagator;
@@ -53,6 +54,14 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
         BlockPos neighbourPos = pos.offset(direction);
         BlockState neighbourState = world.getBlockState(neighbourPos);
 
+        //if it is a colored tank, and is not the same color as the pipe, don't connect
+        if(ColoredFluidTankBlock.isColoredTank(neighbourState)){
+            ColoredFluidPipeBlock block = (ColoredFluidPipeBlock) state.getBlock();
+            ColoredFluidTankBlock other = (ColoredFluidTankBlock) neighbourState.getBlock();
+            if(block.color != other.color)
+                return false;
+        }
+
         //Has fluid capability
         if (FluidPropagator.hasFluidCapability(world, neighbourPos, direction.getOpposite()))
             return true;
@@ -73,6 +82,7 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
                     FluidPropagator.getStraightPipeAxis(neighbourState) == direction.getAxis();
         }
 
+        //if it is a glass pipe and is not of the same color, we don't connect
         if (neighbourState.getBlock() instanceof ColoredGlassFluidPipeBlock glassPipe) {
             if (!sameColor(state, ColoredBlocks.DYED_PIPES.get(glassPipe.color).getDefaultState()))
                 return false;

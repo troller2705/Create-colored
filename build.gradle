@@ -10,7 +10,6 @@ base {
 	archivesName = project.archives_base_name
 }
 
-
 repositories {
 	maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
 	maven { url = "https://maven.blamejared.com/" } // JEI
@@ -34,13 +33,6 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-	// Development QOL
-//	if(sodium)
-//	{
-//		modLocalRuntime("maven.modrinth:indium:1.0.34+mc1.20.1")
-//		modLocalRuntime("maven.modrinth:sodium:mc1.20.1-0.5.11")
-//	}
 
 	// Create - dependencies are added transitively
 	modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:${create_version}")

@@ -1,5 +1,7 @@
 package com.azasad.createcolored.content.models;
 
+import com.azasad.createcolored.ColoredHelpers;
+import com.azasad.createcolored.content.blockEntities.ColoredFluidTankBlockEntity;
 import com.simibubi.create.AllSpriteShifts;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.fluids.tank.FluidTankCTBehaviour;
@@ -49,7 +51,9 @@ public class ColoredFluidTankModel extends CTModel {
             quad.cullFace(null);
             return true;
         });
+
         super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
+
         context.popTransform();
     }
 

@@ -25,6 +25,10 @@ public class ColoredCreativeTabs {
                             for (DyeColor color : DyeColor.values()) {
                                 entries.add(ColoredBlocks.DYED_PIPES.get(color).asStack());
                             }
+
+                            for (DyeColor color : DyeColor.values()){
+                                entries.add(ColoredBlocks.DYED_FLUID_TANKS.get(color));
+                            }
                         })
                         .build());
     }

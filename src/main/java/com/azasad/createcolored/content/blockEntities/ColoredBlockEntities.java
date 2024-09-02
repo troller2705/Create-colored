@@ -2,14 +2,10 @@ package com.azasad.createcolored.content.blockEntities;
 
 import com.azasad.createcolored.CreateColored;
 import com.azasad.createcolored.content.block.ColoredBlocks;
-import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.fluids.pipes.TransparentStraightPipeRenderer;
-import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.fluids.tank.FluidTankRenderer;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
-
-import static com.simibubi.create.Create.REGISTRATE;
 
 public class ColoredBlockEntities {
     private static final CreateRegistrate REGISTRATE = CreateColored.REGISTRATE;

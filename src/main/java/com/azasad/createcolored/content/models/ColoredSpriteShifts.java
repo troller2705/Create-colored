@@ -1,7 +1,6 @@
 package com.azasad.createcolored.content.models;
 
 import com.azasad.createcolored.CreateColored;
-import com.simibubi.create.Create;
 import com.simibubi.create.foundation.block.connected.AllCTTypes;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.CTSpriteShifter;
@@ -17,7 +16,7 @@ public class ColoredSpriteShifts {
             DYED_FLUID_TANK_INNER = new EnumMap<>(DyeColor.class);
 
     static {
-        for(DyeColor color : DyeColor.values()) {
+        for (DyeColor color : DyeColor.values()) {
             CTSpriteShiftEntry fluidTank = getColoredCT(AllCTTypes.RECTANGLE, "fluid_tank", color);
             CTSpriteShiftEntry fluidTankTop = getColoredCT(AllCTTypes.RECTANGLE, "fluid_tank_top", color);
             CTSpriteShiftEntry fluidTankInner = getColoredCT(AllCTTypes.RECTANGLE, "fluid_tank_inner", color);
@@ -32,7 +31,6 @@ public class ColoredSpriteShifts {
         String basePath = "block/" + blockTextureName;
         String originalTexturePath = basePath + "/" + color.getName();
         String connectedTexturePath = basePath + "_connected/" + color.getName();
-        CreateColored.LOGGER.info("Registering sprite shift, Base texture: " + originalTexturePath + "  Connected texture: " + connectedTexturePath);
         return CTSpriteShifter.getCT(type, CreateColored.asResource(originalTexturePath),
                 CreateColored.asResource(connectedTexturePath));
     }

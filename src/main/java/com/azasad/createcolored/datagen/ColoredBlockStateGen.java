@@ -3,7 +3,6 @@ package com.azasad.createcolored.datagen;
 import com.azasad.createcolored.content.block.ColoredFluidPipeBlock;
 import com.azasad.createcolored.content.block.ColoredFluidTankBlock;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
@@ -34,17 +33,6 @@ public class ColoredBlockStateGen {
             String coloredPath = "block/colored_fluid_tank/" + c.getName() + "/";
             String path = "block/fluid_tank/";
 
-//            List<String> prefixes = ImmutableList.of("bottom","middle","single","top");
-//            List<String> alts = ImmutableList.of("","_window","_window_ne", "_window_nw", "_window_se", "_window_sw");
-//
-//            //Create models
-//            for(String prefix : prefixes) {
-//                for(String alt : alts){
-//                    String modelName = "block_" + prefix + alt;
-//                    p.models().withExistingParent(coloredPath + modelName,Create.asResource(path + modelName));
-//                }
-//            }
-
             p.getVariantBuilder(c.getEntry())
                     .forAllStates(state -> {
                         Boolean top = state.get(ColoredFluidTankBlock.TOP);
@@ -52,11 +40,11 @@ public class ColoredBlockStateGen {
                         FluidTankBlock.Shape shape = state.get(ColoredFluidTankBlock.SHAPE);
 
                         String shapeName = "middle";
-                        if(top && bottom)
+                        if (top && bottom)
                             shapeName = "single";
-                        else if(top)
+                        else if (top)
                             shapeName = "top";
-                        else if(bottom)
+                        else if (bottom)
                             shapeName = "bottom";
 
                         //Create model
@@ -68,8 +56,6 @@ public class ColoredBlockStateGen {
                                 .texture("4", p.modLoc("block/fluid_tank_inner/" + colorName))
                                 .texture("5", p.modLoc("block/fluid_tank_window_single/" + colorName))
                                 .texture("particle", p.modLoc("block/fluid_tank/" + colorName));
-
-
 
                         return ConfiguredModel.builder()
                                 .modelFile(model)

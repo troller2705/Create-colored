@@ -41,7 +41,8 @@ public class ColoredTags {
     }
 
     public enum ColoredItemTags {
-        COLORED_PIPES;
+        COLORED_PIPES,
+        COLORED_TANKS;
 
         public final TagKey<Item> tag;
         public final boolean alwaysDatagen;

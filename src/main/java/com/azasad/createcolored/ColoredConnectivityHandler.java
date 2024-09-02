@@ -1,7 +1,6 @@
 package com.azasad.createcolored;
 
 
-import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.fluids.tank.CreativeFluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import com.simibubi.create.foundation.utility.Iterate;
@@ -29,42 +28,46 @@ public class ColoredConnectivityHandler {
         formMulti(be.getType(), be.getWorld(), cache, frontier);
     }
 
+    public static <T extends BlockEntity & IConnectableBlockEntity> void splitMulti(T be) {
+        splitMultiAndInvalidate(be, null, false);
+    }
+
     private static <T extends BlockEntity & IConnectableBlockEntity> void formMulti(BlockEntityType<?> type, BlockView level, SearchCache<T> cache, List<T> frontier) {
         PriorityQueue<Pair<Integer, T>> creationQueue = makeCreationQueue();
         Set<BlockPos> visited = new HashSet<>();
         Direction.Axis mainAxis = frontier.get(0).getMainConnectionAxis();
 
-        // essentially, if it's a vertical multi then the search won't be restricted by
-        // Y
+        // essentially, if it's a vertical multi then the search won't be restricted by Y
         // alternately, a horizontal multi search shouldn't be restricted by X or Z
         int minX = (mainAxis == Direction.Axis.Y ? Integer.MAX_VALUE : Integer.MIN_VALUE);
         int minY = (mainAxis != Direction.Axis.Y ? Integer.MAX_VALUE : Integer.MIN_VALUE);
         int minZ = (mainAxis == Direction.Axis.Y ? Integer.MAX_VALUE : Integer.MIN_VALUE);
 
+        //Find minimum values for each coordinate
         for (T be : frontier) {
             BlockPos pos = be.getPos();
             minX = Math.min(pos.getX(), minX);
             minY = Math.min(pos.getY(), minY);
             minZ = Math.min(pos.getZ(), minZ);
         }
-        if (mainAxis == Direction.Axis.Y)
-            minX -= frontier.get(0)
-                    .getMaxWidth();
-        if (mainAxis != Direction.Axis.Y)
-            minY -= frontier.get(0)
-                    .getMaxWidth();
-        if (mainAxis == Direction.Axis.Y)
-            minZ -= frontier.get(0)
-                    .getMaxWidth();
+
+        //Account for structure size
+        int maxWidth = frontier.get(0).getMaxWidth();
+        if (mainAxis == Direction.Axis.Y) {
+            minX -= maxWidth;
+            minZ -= maxWidth;
+        } else {
+            minY -= maxWidth;
+        }
 
         while (!frontier.isEmpty()) {
             T part = frontier.remove(0);
             BlockPos partPos = part.getPos();
-            if(visited.contains(partPos))
+            if (visited.contains(partPos))
                 continue;
 
             visited.add(partPos);
-            int amount = tryToFormNewMulti(part, cache, false);
+            int amount = tryToFormNewMulti(part, cache, true);
             if (amount > 1) {
                 creationQueue.add(Pair.of(amount, part));
             }
@@ -83,6 +86,8 @@ public class ColoredConnectivityHandler {
                     continue;
                 if (nextBe.isRemoved())
                     continue;
+                if (!part.canConnectWith(next, level))
+                    continue;
                 frontier.add(nextBe);
             }
         }
@@ -91,7 +96,7 @@ public class ColoredConnectivityHandler {
         while (!creationQueue.isEmpty()) {
             Pair<Integer, T> next = creationQueue.poll();
             T toCreate = next.getValue();
-            if(visited.contains(toCreate.getPos()))
+            if (visited.contains(toCreate.getPos()))
                 continue;
 
             visited.add(toCreate.getPos());
@@ -101,14 +106,10 @@ public class ColoredConnectivityHandler {
 
     @Nullable
     public static <T extends BlockEntity & IConnectableBlockEntity> T partAt(BlockEntityType<?> type, BlockView level,
-                                                                                BlockPos pos) {
+                                                                             BlockPos pos) {
         BlockEntity be = level.getBlockEntity(pos);
-        if (be != null && be.getType() == type && !be.isRemoved()) {
-            T checkedBe = checked(be);
-            //Delegate the connection check to the block entity
-            if(checkedBe != null && checkedBe.canConnectWith(pos, type, level))
-                return checkedBe;
-        }
+        if (be != null && be.getType() == type && !be.isRemoved())
+            return checked(be);
         return null;
     }
 
@@ -124,10 +125,11 @@ public class ColoredConnectivityHandler {
         return new PriorityQueue<>((one, two) -> two.getKey() - one.getKey());
     }
 
+    //Simulate, or create a multi-block structure, and return the amount of blocks that would get connected
     private static <T extends BlockEntity & IConnectableBlockEntity> int tryToFormNewMulti(T be, SearchCache<T> cache, boolean simulate) {
         int bestWidth = 1;
         int bestAmount = -1;
-        if(!be.isController())
+        if (!be.isController())
             return 0;
 
         int radius = be.getMaxWidth();
@@ -139,12 +141,12 @@ public class ColoredConnectivityHandler {
             bestAmount = amount;
         }
 
-        if(!simulate) {
+        if (!simulate) {
             int beWidth = be.getWidth();
-            if(beWidth == bestWidth && beWidth * beWidth * be.getHeight() == bestAmount)
+            if (beWidth == bestWidth && beWidth * beWidth * be.getHeight() == bestAmount)
                 return bestAmount;
 
-            //splitMultiAndInvalidate(be, cache, false);
+            splitMultiAndInvalidate(be, cache, false);
             if (be instanceof IMultiBlockEntityContainer.Fluid ifluid && ifluid.hasTank())
                 ifluid.setTankSize(0, bestAmount);
 
@@ -164,9 +166,8 @@ public class ColoredConnectivityHandler {
         int height = 0;
         BlockEntityType<?> type = be.getType();
         World level = be.getWorld();
-        if(level == null)
+        if (level == null)
             return 0;
-
         BlockPos origin = be.getPos();
 
         // optional fluid handling
@@ -178,7 +179,8 @@ public class ColoredConnectivityHandler {
         }
         Direction.Axis axis = be.getMainConnectionAxis();
 
-        Search: for (int yOffset = 0; yOffset < be.getMaxLength(axis, width); yOffset++) {
+        Search:
+        for (int yOffset = 0; yOffset < be.getMaxLength(axis, width); yOffset++) {
             for (int xOffset = 0; xOffset < width; xOffset++) {
                 for (int zOffset = 0; zOffset < width; zOffset++) {
                     BlockPos pos = switch (axis) {
@@ -187,7 +189,7 @@ public class ColoredConnectivityHandler {
                         case Z -> origin.add(xOffset, zOffset, yOffset);
                     };
                     Optional<T> part = cache.getOrCache(type, level, pos);
-                    if (part.isEmpty() || !part.get().canConnectWith(pos, type, level)) {
+                    if (part.isEmpty()) {
                         break Search;
                     }
 
@@ -203,6 +205,9 @@ public class ColoredConnectivityHandler {
                         break Search;
 
                     BlockPos conPos = controller.getPos();
+                    if (!be.canConnectWith(conPos, level))
+                        break Search;
+
                     if (!conPos.equals(origin)) {
                         if (axis == Direction.Axis.Y) { // vertical multi, like a FluidTank
                             if (conPos.getX() < origin.getX())
@@ -230,7 +235,7 @@ public class ColoredConnectivityHandler {
                     }
                     if (controller instanceof IMultiBlockEntityContainer.Fluid ifluidCon && ifluidCon.hasTank()) {
                         FluidStack otherFluid = ifluidCon.getFluid(0);
-                        if (!fluid.isEmpty() && !otherFluid.isEmpty() && !fluid.isFluidEqual(otherFluid))
+                        if (!fluid.isEmpty() && !otherFluid.isEmpty() && !fluid.isFluidEqual(otherFluid)) //Both tanks have different fluids so they don't connect
                             break Search;
                     }
                 }
@@ -239,7 +244,7 @@ public class ColoredConnectivityHandler {
             height++;
         }
 
-        if(simulate)
+        if (simulate)
             return amount;
 
         Object extraData = be.getExtraData();

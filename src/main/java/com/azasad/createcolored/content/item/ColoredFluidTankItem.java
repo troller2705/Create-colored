@@ -1,11 +1,9 @@
 package com.azasad.createcolored.content.item;
 
+import com.azasad.createcolored.ColoredConnectivityHandler;
+import com.azasad.createcolored.content.block.ColoredFluidTankBlock;
 import com.azasad.createcolored.content.blockEntities.ColoredBlockEntities;
 import com.azasad.createcolored.content.blockEntities.ColoredFluidTankBlockEntity;
-import com.simibubi.create.AllBlockEntityTypes;
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.api.connectivity.ConnectivityHandler;
-import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.fluids.tank.FluidTankItem;
 import net.minecraft.block.Block;
@@ -23,6 +21,7 @@ public class ColoredFluidTankItem extends FluidTankItem {
         super(block, properties);
     }
 
+    //TODO: Refactor this, we are calling the same two times
     @Override
     public ActionResult place(ItemPlacementContext ctx) {
         IS_PLACING_NBT = FluidTankItem.checkPlacingNbt(ctx);
@@ -34,6 +33,7 @@ public class ColoredFluidTankItem extends FluidTankItem {
         return initialResult;
     }
 
+    //TODO: Refactor this too
     private void tryMultiPlace(ItemPlacementContext ctx) {
         PlayerEntity player = ctx.getPlayer();
         if (player == null)
@@ -50,9 +50,10 @@ public class ColoredFluidTankItem extends FluidTankItem {
         BlockPos placedOnPos = pos.offset(face.getOpposite());
         BlockState placedOnState = world.getBlockState(placedOnPos);
 
-        if (!FluidTankBlock.isTank(placedOnState))
+        //If we aren't placing in another colored tank, abort
+        if (!ColoredFluidTankBlock.isTank(placedOnState))
             return;
-        ColoredFluidTankBlockEntity tankAt = ConnectivityHandler.partAt(
+        ColoredFluidTankBlockEntity tankAt = ColoredConnectivityHandler.partAt(
                 ColoredBlockEntities.COLORED_FLUID_TANK_ENTITY.get(), world, placedOnPos
         );
         if (tankAt == null)
@@ -74,11 +75,12 @@ public class ColoredFluidTankItem extends FluidTankItem {
         if (startPos.getY() != pos.getY())
             return;
 
+        //For all connected blocks in the layer below or above
         for (int xOffset = 0; xOffset < width; xOffset++) {
             for (int zOffset = 0; zOffset < width; zOffset++) {
                 BlockPos offsetPos = startPos.add(xOffset, 0, zOffset);
                 BlockState blockState = world.getBlockState(offsetPos);
-                if (FluidTankBlock.isTank(blockState))
+                if (ColoredFluidTankBlock.isTank(blockState))
                     continue;
                 if (!blockState.isReplaceable())
                     return;
@@ -93,13 +95,13 @@ public class ColoredFluidTankItem extends FluidTankItem {
             for (int zOffset = 0; zOffset < width; zOffset++) {
                 BlockPos offsetPos = startPos.add(xOffset, 0, zOffset);
                 BlockState blockState = world.getBlockState(offsetPos);
-                if (FluidTankBlock.isTank(blockState))
+                if (ColoredFluidTankBlock.isTank(blockState))
                     continue;
                 ItemPlacementContext context = ItemPlacementContext.offset(ctx, offsetPos, face);
 //                player.getCustomData()
 //                        .method_10556("SilenceTankSound", true);
                 IS_PLACING_NBT = checkPlacingNbt(context);
-                super.place(context);
+                place(context);
                 IS_PLACING_NBT = false;
 //                player.getCustomData()
 //                        .method_10551("SilenceTankSound");
