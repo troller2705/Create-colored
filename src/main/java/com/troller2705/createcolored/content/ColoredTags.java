@@ -19,7 +19,7 @@ public class ColoredTags {
     }
 
     public enum NameSpace {
-        MOD(CreateColored.MOD_ID, false, true),
+        MOD(CreateColored.MODID, false, true),
         CREATE("create-colored"),
         FORGE("forge"),
         TIC("tic"),

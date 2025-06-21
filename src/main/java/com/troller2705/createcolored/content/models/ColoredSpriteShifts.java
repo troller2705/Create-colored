@@ -5,7 +5,7 @@ import com.simibubi.create.foundation.block.connected.AllCTTypes;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.CTSpriteShifter;
 import com.simibubi.create.foundation.block.connected.CTType;
-import net.minecraft.util.DyeColor;
+import net.minecraft.world.item.DyeColor;
 
 import java.util.EnumMap;
 import java.util.Map;

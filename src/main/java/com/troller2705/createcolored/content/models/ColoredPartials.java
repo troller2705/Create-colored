@@ -1,13 +1,12 @@
 package com.troller2705.createcolored.content.models;
 
 import com.troller2705.createcolored.CreateColored;
-import com.jozufozu.flywheel.core.PartialModel;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
-import com.simibubi.create.foundation.utility.Iterate;
-import com.simibubi.create.foundation.utility.Lang;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
+import dev.engine_room.flywheel.lib.model.baked.PartialModel;
+import net.createmod.catnip.data.Iterate;
+import net.createmod.catnip.lang.Lang;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.DyeColor;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -36,7 +35,7 @@ public class ColoredPartials {
                 Map<String, PartialModel> map = new HashMap<>();
                 for (Direction d : Iterate.directions) {
                     String asId = Lang.asId(type.name());
-                    map.put(d.asString(), block("colored_fluid_pipe/" + color.getName() + "_fluid_pipe/" + asId + "/" + Lang.asId(d.asString())));
+                    map.put(d.getName(), block("colored_fluid_pipe/" + color.getName() + "_fluid_pipe/" + asId + "/" + Lang.asId(d.getName())));
                 }
                 colorMap.put(color, map);
             }
@@ -45,7 +44,7 @@ public class ColoredPartials {
     }
 
     private static PartialModel block(String path) {
-        return new PartialModel(new Identifier(CreateColored.MOD_ID, "block/" + path));
+        return PartialModel.of(CreateColored.asResource("block/" + path));
     }
 
     public static void initialize() {

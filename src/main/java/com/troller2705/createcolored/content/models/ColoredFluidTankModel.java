@@ -13,7 +13,7 @@ import com.simibubi.create.foundation.utility.Iterate;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.util.DyeColor;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;

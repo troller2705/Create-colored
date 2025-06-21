@@ -26,6 +26,7 @@ public class ColoredRegistrate extends CreateRegistrate {
     @Environment(EnvType.CLIENT)
     private static void registerColoredBlockModel(Block entry,
                                                   Supplier<NonNullBiFunction<BakedModel, DyeColor, ? extends BakedModel>> func, DyeColor color) {
+
         CreateClient.MODEL_SWAPPER.getCustomBlockModels()
                 .register(RegisteredObjects.getKeyOrThrow(entry), model -> func.get().apply(model, color));
     }

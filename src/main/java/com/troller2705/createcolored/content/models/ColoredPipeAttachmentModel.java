@@ -5,20 +5,16 @@ import com.troller2705.createcolored.content.block.IColoredBlock;
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.utility.Iterate;
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
+import dev.engine_room.flywheel.api.backend.RenderContext;
+import net.createmod.catnip.data.Iterate;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Arrays;
+import java.util.Random;
 import java.util.function.Supplier;
 
 @SuppressWarnings("deprecation")
@@ -69,7 +65,7 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
             for (FluidTransportBehaviour.AttachmentTypes.ComponentPartials partial : type.partials) {
                 ColoredPartials.COLORED_PIPE_ATTACHMENTS.get(partial)
                         .get(color)
-                        .get(d.asString())
+                        .get(d.getName())
                         .get()
                         .emitBlockQuads(world, state, pos, randomSupplier, context);
             }
@@ -108,11 +104,11 @@ public class ColoredPipeAttachmentModel extends ForwardingBakedModel {
         }
 
         public void putAttachment(Direction face, FluidTransportBehaviour.AttachmentTypes rim) {
-            attachments[face.getId()] = rim;
+            attachments[face.get3DDataValue()] = rim;
         }
 
         public FluidTransportBehaviour.AttachmentTypes getAttachment(Direction face) {
-            return attachments[face.getId()];
+            return attachments[face.get3DDataValue()];
         }
 
         public boolean isEncased() {

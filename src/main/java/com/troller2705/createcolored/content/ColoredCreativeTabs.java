@@ -2,36 +2,28 @@ package com.troller2705.createcolored.content;
 
 import com.troller2705.createcolored.CreateColored;
 import com.troller2705.createcolored.content.block.ColoredBlocks;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
 
 public class ColoredCreativeTabs {
-    public static final RegistryKey<ItemGroup> COLORED_CREATIVE_TAB = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(CreateColored.MOD_ID, "colored_creative_tab"));
+    public static DeferredHolder<CreativeModeTab, CreativeModeTab> COLORED_CREATIVE_TAB;
 
-    public static void initialize() {
-        Registry.register(Registries.ITEM_GROUP, COLORED_CREATIVE_TAB,
-                FabricItemGroup.builder()
-                        .icon(() -> new ItemStack(ColoredBlocks.DYED_PIPES.get(DyeColor.ORANGE)))
-                        .displayName(Text.translatable(("itemGroup.create-colored.creative_tab")))
-                        .entries((context, entries) -> {
-                            for (DyeColor color : DyeColor.values()) {
-                                entries.add(ColoredBlocks.DYED_PIPES.get(color).asStack());
-                            }
-
-                            for (DyeColor color : DyeColor.values()){
-                                entries.add(ColoredBlocks.DYED_FLUID_TANKS.get(color));
-                            }
-                        })
-                        .build());
+    public static void initialize(){
+        COLORED_CREATIVE_TAB = CreateColored.CREATIVE_MODE_TABS.register("colored_creative_tab", () -> CreativeModeTab.builder()
+                .title(Component.translatable("itemGroup.create-colored.creative_tab"))
+                .icon(() -> ColoredBlocks.DYED_PIPES.get(DyeColor.ORANGE).asStack())
+                .displayItems(((itemDisplayParameters, output) -> {
+                    for (DyeColor color : DyeColor.values()) {
+                        output.accept(ColoredBlocks.DYED_PIPES.get(color).asStack());
+                        output.accept(ColoredBlocks.DYED_FLUID_TANKS.get(color).asStack());
+                    }
+                }))
+                .build());
     }
+
 }
 
 
