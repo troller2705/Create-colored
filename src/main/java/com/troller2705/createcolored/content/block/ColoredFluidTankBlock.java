@@ -27,14 +27,15 @@ public class ColoredFluidTankBlock extends FluidTankBlock {
 
     private final DyeColor color;
 
-    public ColoredFluidTankBlock(DyeColor color) {
-        super(Properties.of()
-                .mapColor(MapColor.METAL)
-                .strength(1.5f)
-                .requiresCorrectToolForDrops()
-                .noOcclusion(), false);
+    public ColoredFluidTankBlock(Properties properties, DyeColor color) {
+        super(properties, false);
         this.color = color;
-        registerDefaultState(this.defaultBlockState().setValue(COLOR, color));
+        registerDefaultState(defaultBlockState()
+                .setValue(TOP, true)
+                .setValue(BOTTOM, true)
+                .setValue(SHAPE, Shape.WINDOW)
+                .setValue(COLOR, color)
+        );
     }
 
     @Override

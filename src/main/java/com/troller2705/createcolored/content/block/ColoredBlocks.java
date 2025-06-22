@@ -36,7 +36,7 @@ public class ColoredBlocks {
 
     public static final DyedBlockList<ColoredFluidTankBlock> DYED_FLUID_TANKS = new DyedBlockList<>(dyecolor -> {
        String colorName = dyecolor.getName();
-        return CreateColored.REGISTRATE.block(colorName + "_fluid_tank", settings -> new ColoredFluidTankBlock(dyecolor))
+        return CreateColored.REGISTRATE.block(colorName + "_fluid_tank", settings -> new ColoredFluidTankBlock(settings, dyecolor))
                .initialProperties(SharedProperties::copperMetal)
                .properties(p -> p.noOcclusion()
                        .isRedstoneConductor((p1, p2, p3) -> true))

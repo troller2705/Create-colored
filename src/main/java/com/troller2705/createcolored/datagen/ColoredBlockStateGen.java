@@ -48,7 +48,8 @@ public class ColoredBlockStateGen {
 
                         //Create model
                         String modelName = "block_" + shapeName + (shape == FluidTankBlock.Shape.PLAIN ? "" : "_" + shape.name());
-                        ModelFile model = p.models().withExistingParent(coloredPath + modelName, Create.asResource(path + modelName))
+                        ModelFile model = p.models()
+                                .withExistingParent(coloredPath + modelName, Create.asResource(path + modelName))
                                 .texture("0", p.modLoc("block/fluid_tank_top/" + colorName))
                                 .texture("1", p.modLoc("block/fluid_tank/" + colorName))
                                 .texture("3", p.modLoc("block/fluid_tank_window/" + colorName))
