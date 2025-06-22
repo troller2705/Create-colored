@@ -11,7 +11,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
-import net.minecraft.world.level.dimension.*;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -164,13 +167,13 @@ public class ColoredConnectivityHandler {
         int amount = 0;
         int height = 0;
         BlockEntityType<?> type = be.getType();
-        LevelAccessor level = be.getLevel();
+        Level level = be.getLevel();
         if (level == null)
             return 0;
         BlockPos origin = be.getPos();
 
         // optional fluid handling
-        FluidTank beTank = null;
+        IFluidTank beTank = null;
         FluidStack fluid = FluidStack.EMPTY;
         if (be instanceof IMultiBlockEntityContainer.Fluid ifluid && ifluid.hasTank()) {
             beTank = ifluid.getTank(0);
@@ -234,7 +237,7 @@ public class ColoredConnectivityHandler {
                     }
                     if (controller instanceof IMultiBlockEntityContainer.Fluid ifluidCon && ifluidCon.hasTank()) {
                         FluidStack otherFluid = ifluidCon.getFluid(0);
-                        if (!fluid.isEmpty() && !otherFluid.isEmpty() && !fluid.isFluidEqual(otherFluid)) //Both tanks have different fluids so they don't connect
+                        if (!fluid.isEmpty() && !otherFluid.isEmpty() && !FluidStack.isSameFluidSameComponents(fluid, otherFluid))
                             break Search;
                     }
                 }
@@ -265,7 +268,7 @@ public class ColoredConnectivityHandler {
                     extraData = be.modifyExtraData(extraData);
 
                     if (part instanceof IMultiBlockEntityContainer.Fluid ifluidPart && ifluidPart.hasTank()) {
-                        FluidTank tankAt = ifluidPart.getTank(0);
+                        IFluidTank tankAt = ifluidPart.getTank(0);
                         FluidStack fluidAt = tankAt.getFluid();
                         if (!fluidAt.isEmpty()) {
                             // making this generic would be a rather large mess, unfortunately
@@ -276,10 +279,10 @@ public class ColoredConnectivityHandler {
                             }
                             if (be instanceof IMultiBlockEntityContainer.Fluid ifluidBE && ifluidBE.hasTank()
                                     && beTank != null) {
-                                TransferUtil.insertFluid(beTank, fluidAt);
+                                beTank.fill(fluidAt, IFluidHandler.FluidAction.EXECUTE);
                             }
                         }
-                        TransferUtil.clearStorage(tankAt);
+                        tankAt.drain(tankAt.getCapacity(), IFluidHandler.FluidAction.EXECUTE);
                     }
 
                     splitMultiAndInvalidate(part, cache, false);
@@ -299,7 +302,7 @@ public class ColoredConnectivityHandler {
 
     // tryReconnect helps whenever only a few tanks have been removed
     private static <T extends BlockEntity & IConnectableBlockEntity> void splitMultiAndInvalidate(T be, @Nullable SearchCache<T> cache, boolean tryReconnect) {
-        LevelAccessor level = be.getLevel();
+        Level level = be.getLevel();
         if (level == null)
             return;
 
@@ -318,7 +321,7 @@ public class ColoredConnectivityHandler {
 
         // fluid handling, if present
         FluidStack toDistribute = FluidStack.EMPTY;
-        long maxCapacity = 0;
+        int maxCapacity = 0;
         if (be instanceof IMultiBlockEntityContainer.Fluid ifluidBE && ifluidBE.hasTank()) {
             toDistribute = ifluidBE.getFluid(0);
             maxCapacity = ifluidBE.getTankSize(0);
@@ -350,18 +353,18 @@ public class ColoredConnectivityHandler {
 
                     if (!toDistribute.isEmpty() && partAt != be) {
                         FluidStack copy = toDistribute.copy();
-                        FluidTank tank =
+                        IFluidTank tank =
                                 (partAt instanceof IMultiBlockEntityContainer.Fluid ifluidPart ? ifluidPart.getTank(0) : null);
                         // making this generic would be a rather large mess, unfortunately
                         if (tank instanceof CreativeFluidTankBlockEntity.CreativeSmartFluidTank creativeTank) {
                             if (creativeTank.isEmpty())
                                 creativeTank.setContainedFluid(toDistribute);
                         } else {
-                            long split = Math.min(maxCapacity, toDistribute.getAmount());
+                            int split = Math.min(maxCapacity, toDistribute.getAmount());
                             copy.setAmount(split);
                             toDistribute.shrink(split);
                             if (tank != null)
-                                TransferUtil.insertFluid(tank, copy);
+                                tank.fill(copy, IFluidHandler.FluidAction.EXECUTE);
                         }
                     }
                     if (tryReconnect) {

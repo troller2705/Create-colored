@@ -1,6 +1,7 @@
 package com.troller2705.createcolored;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.AllCreativeModeTabs;
 import com.troller2705.createcolored.content.ColoredTags;
 import com.troller2705.createcolored.content.block.ColoredBlocks;
 import com.troller2705.createcolored.content.blockEntities.ColoredBlockEntities;
@@ -20,8 +21,12 @@ import org.slf4j.Logger;
 
 @Mod(CreateColored.MODID)
 public class CreateColored {
-    public static final String MODID = "create-colored";
+    public static final String MODID = "create_colored";
     private static final Logger LOGGER = LogUtils.getLogger();
+
+    public static final CreateRegistrate REGISTRATE = CreateRegistrate
+            .create(MODID)
+            .defaultCreativeTab(AllCreativeModeTabs.BASE_CREATIVE_TAB.getKey());
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
@@ -38,7 +43,7 @@ public class CreateColored {
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
 
-        NeoForge.EVENT_BUS.register(this);
+        //NeoForge.EVENT_BUS.register(this);
 
 //        modContainer.registerConfig(ModConfig.Type.COMMON, Config.CONFIG_SPEC);
     }
@@ -51,6 +56,5 @@ public class CreateColored {
         ColoredTags.initialize();
         ColoredBlockEntities.initialize();
         ColoredBlocks.initialize();
-        REGISTRATE.register();
     }
 }

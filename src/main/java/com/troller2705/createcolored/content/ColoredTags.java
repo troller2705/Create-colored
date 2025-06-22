@@ -1,26 +1,27 @@
 package com.troller2705.createcolored.content;
 
+import com.simibubi.create.Create;
 import com.troller2705.createcolored.CreateColored;
-import com.simibubi.create.foundation.utility.Lang;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.createmod.catnip.lang.Lang;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 public class ColoredTags {
-    public static <T> TagKey<T> optionalTag(Registry<T> registry,
-                                            Identifier id) {
-        return TagKey.of(registry.getKey(), id);
+    public static <T> TagKey<T> optionalTag(Registry<T> registry, ResourceLocation id) {
+        return TagKey.create(registry.key(), id);
     }
 
-    public static <T> TagKey<T> forgeTag(Registry<T> registry, String path) {
-        return optionalTag(registry, new Identifier("c", path));
+    public static <T> TagKey<T> commonTag(Registry<T> registry, String path) {
+        return optionalTag(registry, ResourceLocation.fromNamespaceAndPath("c", path));
     }
 
     public enum NameSpace {
         MOD(CreateColored.MODID, false, true),
-        CREATE("create-colored"),
+        CREATE(Create.ID),
         FORGE("forge"),
         TIC("tic"),
         QUARK("quark");
@@ -64,9 +65,12 @@ public class ColoredTags {
         }
 
         ColoredItemTags(ColoredTags.NameSpace namespace, String path, boolean optional, boolean alwaysDatagen) {
-            Identifier id = new Identifier(namespace.id, path == null ? Lang.asId(name()) : path);
-            tag = optionalTag(Registries.ITEM, id);
-
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace.id, path == null ? Lang.asId(name()) : path);
+            if (optional) {
+                tag = optionalTag(BuiltInRegistries.ITEM, id);
+            } else {
+                tag = ItemTags.create(id);
+            }
             this.alwaysDatagen = alwaysDatagen;
         }
 
