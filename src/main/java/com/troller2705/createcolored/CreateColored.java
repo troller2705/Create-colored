@@ -2,14 +2,18 @@ package com.troller2705.createcolored;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.AllCreativeModeTabs;
+import com.troller2705.createcolored.content.ColoredCreativeTabs;
 import com.troller2705.createcolored.content.ColoredTags;
 import com.troller2705.createcolored.content.block.ColoredBlocks;
 import com.troller2705.createcolored.content.blockEntities.ColoredBlockEntities;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -24,28 +28,33 @@ public class CreateColored {
     public static final String MODID = "create_colored";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final CreateRegistrate REGISTRATE = CreateRegistrate
-            .create(MODID)
-            .defaultCreativeTab(AllCreativeModeTabs.BASE_CREATIVE_TAB.getKey());
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CreateColored.MODID);
 
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
 
     public static ResourceLocation asResource(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
-    public CreateColored(IEventBus modEventBus, ModContainer modContainer) {
-        modEventBus.addListener(this::commonSetup);
+    static {
+        REGISTRATE
+                .defaultCreativeTab((ResourceKey<CreativeModeTab>) null);
+    }
 
-        BLOCKS.register(modEventBus);
-        ITEMS.register(modEventBus);
+    public CreateColored(IEventBus modEventBus, ModContainer modContainer) {
+        REGISTRATE.registerEventListeners(modEventBus);
+
         CREATIVE_MODE_TABS.register(modEventBus);
 
-        //NeoForge.EVENT_BUS.register(this);
+        ColoredTags.initialize();
+        ColoredBlocks.initialize();
+        ColoredBlockEntities.initialize();
+        ColoredCreativeTabs.initialize();
 
-//        modContainer.registerConfig(ModConfig.Type.COMMON, Config.CONFIG_SPEC);
+        REGISTRATE
+                .defaultCreativeTab(ColoredCreativeTabs.MAIN, "test");
+
+        modEventBus.addListener(this::commonSetup);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -53,8 +62,6 @@ public class CreateColored {
         LOGGER.info("HELLO FROM COMMON SETUP");
 
         LOGGER.info("Registering create-colored blocks!");
-        ColoredTags.initialize();
-        ColoredBlockEntities.initialize();
-        ColoredBlocks.initialize();
+
     }
 }

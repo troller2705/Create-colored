@@ -1,6 +1,0 @@
-{
-  "parent": "create:block/fluid_pipe/rim/west",
-  "textures": {
-    "0": "create-colored:block/pipes/red"
-  }
-}

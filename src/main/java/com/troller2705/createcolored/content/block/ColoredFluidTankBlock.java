@@ -4,10 +4,12 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import com.troller2705.createcolored.content.blockEntities.ColoredFluidTankBlockEntity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.Level;
@@ -30,6 +32,12 @@ public class ColoredFluidTankBlock extends FluidTankBlock {
                 .noOcclusion(), false);
         this.color = color;
         registerDefaultState(this.defaultBlockState().setValue(COLOR, color));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        super.createBlockStateDefinition(pBuilder);
+        pBuilder.add(COLOR);
     }
 
     public DyeColor getColor() {

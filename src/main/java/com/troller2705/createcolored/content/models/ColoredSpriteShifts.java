@@ -1,5 +1,6 @@
 package com.troller2705.createcolored.content.models;
 
+import com.simibubi.create.Create;
 import com.troller2705.createcolored.CreateColored;
 import com.simibubi.create.foundation.block.connected.AllCTTypes;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
@@ -31,7 +32,7 @@ public class ColoredSpriteShifts {
         String basePath = "block/" + blockTextureName;
         String originalTexturePath = basePath + "/" + color.getName();
         String connectedTexturePath = basePath + "_connected/" + color.getName();
-        return CTSpriteShifter.getCT(type, CreateColored.asResource(originalTexturePath),
+        return CTSpriteShifter.getCT(type, Create.asResource(originalTexturePath),
                 CreateColored.asResource(connectedTexturePath));
     }
 

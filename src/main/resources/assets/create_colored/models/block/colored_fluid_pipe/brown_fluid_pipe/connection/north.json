@@ -1,0 +1,6 @@
+{
+  "parent": "create:block/fluid_pipe/connection/north",
+  "textures": {
+    "0": "create_colored:block/pipes/brown"
+  }
+}

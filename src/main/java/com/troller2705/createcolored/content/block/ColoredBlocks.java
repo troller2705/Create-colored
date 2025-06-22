@@ -33,11 +33,10 @@ import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 
 @SuppressWarnings({"deprecation", "removal"})
 public class ColoredBlocks {
-    private static final CreateRegistrate REGISTRATE = CreateColored.REGISTRATE;
 
     public static final DyedBlockList<ColoredFluidTankBlock> DYED_FLUID_TANKS = new DyedBlockList<>(dyecolor -> {
        String colorName = dyecolor.getName();
-        return REGISTRATE.block(colorName + "_fluid_tank", settings -> new ColoredFluidTankBlock(dyecolor))
+        return CreateColored.REGISTRATE.block(colorName + "_fluid_tank", settings -> new ColoredFluidTankBlock(dyecolor))
                .initialProperties(SharedProperties::copperMetal)
                .properties(p -> p.noOcclusion()
                        .isRedstoneConductor((p1, p2, p3) -> true))
@@ -71,7 +70,7 @@ public class ColoredBlocks {
 
     public static final DyedBlockList<ColoredFluidPipeBlock> DYED_PIPES = new DyedBlockList<>(dyeColor -> {
         String colorName = dyeColor.getName();
-        return REGISTRATE.block(colorName + "_fluid_pipe", settings -> new ColoredFluidPipeBlock(settings, dyeColor))
+        return CreateColored.REGISTRATE.block(colorName + "_fluid_pipe", settings -> new ColoredFluidPipeBlock(settings, dyeColor))
                 .initialProperties(SharedProperties::copperMetal)
                 .properties(p -> p.mapColor(dyeColor.getMapColor())
                         .forceSolidOff())
@@ -94,7 +93,7 @@ public class ColoredBlocks {
 
     public static final DyedBlockList<ColoredGlassFluidPipeBlock> DYED_GLASS_PIPES = new DyedBlockList<>(dyeColor -> {
         String colorName = dyeColor.getName();
-        return REGISTRATE.block(colorName + "_glass_fluid_pipe", settings -> new ColoredGlassFluidPipeBlock(settings, dyeColor))
+        return CreateColored.REGISTRATE.block(colorName + "_glass_fluid_pipe", settings -> new ColoredGlassFluidPipeBlock(settings, dyeColor))
                 .initialProperties(SharedProperties::copperMetal)
                 .properties(p -> p.noOcclusion())
                 .addLayer(() -> RenderType::cutoutMipped)
@@ -119,7 +118,7 @@ public class ColoredBlocks {
 
     public static final DyedBlockList<ColoredEncasedPipeBlock> DYED_ENCASED_PIPES = new DyedBlockList<>(dyeColor -> {
         String colorName = dyeColor.getName();
-        return REGISTRATE.block(colorName + "_encased_fluid_pipe", p -> new ColoredEncasedPipeBlock(p, AllBlocks.COPPER_CASING::get, dyeColor))
+        return CreateColored.REGISTRATE.block(colorName + "_encased_fluid_pipe", p -> new ColoredEncasedPipeBlock(p, AllBlocks.COPPER_CASING::get, dyeColor))
                 .initialProperties(SharedProperties::copperMetal)
                 .properties(p -> p.noOcclusion()
                             .mapColor(dyeColor.getMapColor()))

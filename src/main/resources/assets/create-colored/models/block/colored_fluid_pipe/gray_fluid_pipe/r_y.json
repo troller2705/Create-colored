@@ -1,7 +1,0 @@
-{
-  "parent": "create:block/fluid_pipe/r_y",
-  "textures": {
-    "0": "create-colored:block/pipes_connected/gray",
-    "particle": "create-colored:block/pipes_connected/gray"
-  }
-}

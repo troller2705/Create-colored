@@ -1,6 +1,0 @@
-{
-  "parent": "create:block/fluid_pipe/casing",
-  "textures": {
-    "0": "create-colored:block/pipes/red"
-  }
-}
