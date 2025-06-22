@@ -1,6 +1,9 @@
 package com.troller2705.createcolored.content.block;
 
+import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
+import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
+import com.troller2705.createcolored.content.blockEntities.ColoredBlockEntities;
 import com.troller2705.createcolored.content.blockEntities.ColoredFluidTankBlockEntity;
 
 import net.minecraft.core.BlockPos;
@@ -48,10 +51,9 @@ public class ColoredFluidTankBlock extends FluidTankBlock {
         return state.getBlock() instanceof ColoredFluidTankBlock;
     }
 
-    @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new ColoredFluidTankBlockEntity(ColoredFluidTankBlockEntity.TYPE, pos, state);
+    public BlockEntityType<? extends FluidTankBlockEntity> getBlockEntityType() {
+        return ColoredBlockEntities.COLORED_FLUID_TANK_ENTITY.get();
     }
 
     @Nullable

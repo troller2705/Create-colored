@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
+import org.jetbrains.annotations.NotNull;
 
 public class ColoredFluidTankBlockEntity extends FluidTankBlockEntity implements IConnectableBlockEntity {
     public static BlockEntityType<ColoredFluidTankBlockEntity> TYPE;
@@ -35,14 +36,12 @@ public class ColoredFluidTankBlockEntity extends FluidTankBlockEntity implements
         return false;
     }
 
-    @Override
+
     public Level getWorld() {
         return level;
     }
 
-    @Override
-    public BlockPos getPos()
-    {
-        return null;
-    }
+
+    public BlockPos getPos() { return getBlockPos(); }
+
 }
