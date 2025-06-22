@@ -11,7 +11,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 public class ColoredCreativeTabs {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = CreateColored.CREATIVE_MODE_TABS.register("colored_creative_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.create-colored.creative_tab"))
+            .title(Component.translatable("itemGroup.create_colored.creative_tab"))
             .icon(() -> ColoredBlocks.DYED_PIPES.get(DyeColor.PURPLE).asStack())
             .displayItems(((itemDisplayParameters, output) -> {
                 for (DyeColor color : DyeColor.values()) {
