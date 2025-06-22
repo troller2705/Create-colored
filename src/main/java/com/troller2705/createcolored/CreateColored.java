@@ -52,7 +52,7 @@ public class CreateColored {
         ColoredCreativeTabs.initialize();
 
         REGISTRATE
-                .defaultCreativeTab(ColoredCreativeTabs.MAIN, "test");
+                .defaultCreativeTab(ColoredCreativeTabs.MAIN, "colored_creative_tab");
 
         modEventBus.addListener(this::commonSetup);
     }

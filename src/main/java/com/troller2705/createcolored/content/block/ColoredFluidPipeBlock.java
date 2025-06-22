@@ -12,6 +12,7 @@ import net.createmod.catnip.data.Iterate;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +43,7 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
         this.color = color;
     }
 
-    public static BlockState updateConnections(BlockGetter world, BlockPos pos, BlockState state, @Nullable Direction ignored) {
+    public static BlockState updateConnections(BlockAndTintGetter world, BlockPos pos, BlockState state, @Nullable Direction ignored) {
         BlockState newState = state;
         for (Direction d : Iterate.directions) {
             if (d == ignored)
@@ -53,7 +54,7 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
         return newState;
     }
 
-    public static boolean canConnectToColored(BlockGetter world, BlockPos pos, BlockState state, Direction direction) {
+    public static boolean canConnectToColored(BlockAndTintGetter world, BlockPos pos, BlockState state, Direction direction) {
         BlockPos neighbourPos = pos.offset(direction.getNormal());
         BlockState neighbourState = world.getBlockState(neighbourPos);
 
@@ -115,7 +116,7 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
         return state.getBlock() instanceof ColoredGlassFluidPipeBlock;
     }
 
-    public static boolean shouldDrawCasing(BlockState state) {
+    public static boolean shouldDrawCasing(BlockAndTintGetter world, BlockPos pos, BlockState state) {
         if (!isColoredPipe(state))
             return false;
         for (Direction.Axis axis : Iterate.axes) {
@@ -129,7 +130,7 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
         return false;
     }
 
-    public static boolean shouldDrawRim(BlockGetter world, BlockPos pos, BlockState state, Direction direction) {
+    public static boolean shouldDrawRim(BlockAndTintGetter world, BlockPos pos, BlockState state, Direction direction) {
         BlockPos offsetPos = pos.offset(direction.getNormal());
         BlockState facingState = world.getBlockState(offsetPos);
         if (facingState.getBlock() instanceof EncasedPipeBlock)
@@ -218,7 +219,8 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
         }
     }
 
-    public BlockState updateBlockState(BlockState state, Direction preferredDirection, @Nullable Direction ignore, BlockGetter world, BlockPos pos) {
+    @Override
+    public BlockState updateBlockState(BlockState state, Direction preferredDirection, @Nullable Direction ignore, BlockAndTintGetter world, BlockPos pos) {
         // Do nothing if we are bracketed
         BracketedBlockEntityBehaviour bracket = BlockEntityBehaviour.get(world, pos, BracketedBlockEntityBehaviour.TYPE);
         if (bracket != null && bracket.isBracketPresent())
