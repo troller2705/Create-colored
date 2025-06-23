@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 
-public interface IConnectableBlockEntity extends IMultiBlockEntityContainer.Fluid {
+public interface IConnectableBlockEntity extends IMultiBlockEntityContainer.Fluidk {
     boolean canConnectWith(BlockPos pos, Level level);
 
     Level getWorld();
