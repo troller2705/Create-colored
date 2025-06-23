@@ -1,7 +1,7 @@
 {
   "variants": {
     "bottom=false,shape=plain,top=false": {
-      "model": "create_colored:block/colored_fluid_tank/purple_fluid_tank/block_middle"
+      "model": "create_colored:block/colored_fluid_tank/purple_fluid_tank/fluid_tank_inner"
     },
     "bottom=false,shape=plain,top=true": {
       "model": "create_colored:block/colored_fluid_tank/purple_fluid_tank/block_top"
