@@ -29,8 +29,8 @@ public class ColoredFluidTankModel extends CTModel {
     public static ColoredFluidTankModel standard(BakedModel originalModel, DyeColor color) {
         return new ColoredFluidTankModel(originalModel,
                 ColoredSpriteShifts.DYED_FLUID_TANK.get(color),
-                ColoredSpriteShifts.DYED_FLUID_TANK_TOP.get(color),
-                ColoredSpriteShifts.DYED_FLUID_TANK_INNER.get(color)
+                ColoredSpriteShifts.DYED_FLUID_TANK_INNER.get(color),
+                ColoredSpriteShifts.DYED_FLUID_TANK_TOP.get(color)
         );
     }
 
