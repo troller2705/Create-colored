@@ -1,6 +1,7 @@
 package com.troller2705.createcolored;
 
 
+import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.fluids.tank.CreativeFluidTankBlockEntity;
 import com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import net.createmod.catnip.data.Iterate;
@@ -20,7 +21,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class ColoredConnectivityHandler {
+public class ColoredConnectivityHandler
+{
 
     //Initialize the search for a multi block
     public static <T extends BlockEntity & IConnectableBlockEntity> void formMulti(T be) {
