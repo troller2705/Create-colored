@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "minecraft:lime_dye"
+    },
+    {
+      "item": "create:fluid_tank"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_colored:lime_fluid_tank"
+  },
+  "group": "colored_fluid_tanks"
+}

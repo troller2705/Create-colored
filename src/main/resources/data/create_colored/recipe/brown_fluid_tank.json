@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "minecraft:brown_dye"
+    },
+    {
+      "item": "create:fluid_tank"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_colored:brown_fluid_tank"
+  },
+  "group": "colored_fluid_tanks"
+}

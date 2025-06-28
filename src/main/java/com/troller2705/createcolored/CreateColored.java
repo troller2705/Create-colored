@@ -66,7 +66,7 @@ public class CreateColored {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
 
-        LOGGER.info("Registering create-colored blocks!");
+        LOGGER.info("Registering create_colored blocks!");
 
     }
 }

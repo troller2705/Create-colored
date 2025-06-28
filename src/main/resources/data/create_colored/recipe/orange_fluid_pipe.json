@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "minecraft:orange_dye"
+    },
+    {
+      "item": "create:fluid_pipe"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "create_colored:orange_fluid_pipe"
+  },
+  "group": "colored_fluid_pipes"
+}

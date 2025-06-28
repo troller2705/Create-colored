@@ -48,14 +48,6 @@ public class ColoredBlocks {
                .onRegister(movementBehaviour(new FluidTankMovementBehavior()))
                .addLayer(() -> RenderType::cutoutMipped)
                .item(ColoredFluidTankItem::new)
-               .model((c,p) -> {
-                   p.withExistingParent(c.getName(), Create.asResource("item/fluid_tank"))
-                           .texture("0", p.modLoc("block/fluid_tank_top/" + colorName))
-                           .texture("1", p.modLoc("block/fluid_tank/" + colorName))
-                           .texture("3", p.modLoc("block/fluid_tank_window/" + colorName))
-                           .texture("4", p.modLoc("block/fluid_tank_inner/" + colorName))
-                           .texture("5", p.modLoc("block/fluid_tank_window_single/" + colorName));
-               })
                .recipe((c,p) -> {
                    ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get(), 1)
                            .requires(ColoredHelpers.getDyeItem(dyecolor))
@@ -78,7 +70,6 @@ public class ColoredBlocks {
                 .onRegister(ColoredRegistrate.coloredBlockModel(() -> ColoredPipeAttachmentModel::withAO, dyeColor))
                 .blockstate(ColoredBlockStateGen.coloredPipe(dyeColor))
                 .item()
-                .model((c, p) -> p.withExistingParent(c.getName(), Create.asResource("item/fluid_pipe")).texture("1", "block/pipes/" + colorName))
                 .recipe((c, p) -> {
                     ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get(), 1)
                             .requires(ColoredHelpers.getDyeItem(dyeColor))

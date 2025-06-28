@@ -95,6 +95,12 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
                 return false;
         }
 
+        if(neighbourState.getBlock() instanceof ColoredEncasedPipeBlock encasedPipeBlock){
+            ColoredFluidPipeBlock current = (ColoredFluidPipeBlock) state.getBlock();
+            if (!current.getColor().equals(encasedPipeBlock.getColor()))
+                return false;
+        }
+
         FluidTransportBehaviour transport = BlockEntityBehaviour.get(world, neighbourPos, FluidTransportBehaviour.TYPE);
         //If it can transport fluid, connect else we don't connect;
         if (transport == null)
