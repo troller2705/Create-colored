@@ -1,5 +1,6 @@
 package com.troller2705.createcolored.content.item;
 
+import com.simibubi.create.foundation.block.IBE;
 import com.troller2705.createcolored.ColoredConnectivityHandler;
 import com.troller2705.createcolored.content.block.ColoredFluidTankBlock;
 import com.troller2705.createcolored.content.blockEntities.ColoredBlockEntities;
@@ -10,12 +11,15 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.BlockItemStateProperties;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -23,6 +27,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class ColoredFluidTankItem extends FluidTankItem {
     public ColoredFluidTankItem(Block block, Properties properties) {
@@ -109,6 +114,33 @@ public class ColoredFluidTankItem extends FluidTankItem {
                         .remove("SilenceTankSound");
             }
         }
+    }
+
+    @Override
+    protected boolean updateCustomBlockEntityTag(BlockPos blockPos, Level level, Player player, ItemStack itemStack, BlockState blockState) {
+
+        MinecraftServer minecraftserver = level.getServer();
+        if (minecraftserver == null)
+            return false;
+        CustomData blockEntityData = itemStack.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (blockEntityData != null) {
+            CompoundTag nbt = blockEntityData.copyTag();
+            nbt.remove("Luminosity");
+            nbt.remove("Size");
+            nbt.remove("Height");
+            nbt.remove("Controller");
+            nbt.remove("LastKnownPos");
+            if (nbt.contains("TankContent")) {
+                FluidStack fluid = FluidStack.parseOptional(minecraftserver.registryAccess(), nbt.getCompound("TankContent"));
+                if (!fluid.isEmpty()) {
+                    fluid.setAmount(Math.min(ColoredFluidTankBlockEntity.getCapacityMultiplier(), fluid.getAmount()));
+                    nbt.put("TankContent", fluid.saveOptional(minecraftserver.registryAccess()));
+                }
+            }
+            BlockEntity.addEntityType(nbt, ((IBE<?>) this.getBlock()).getBlockEntityType());
+            itemStack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(nbt));
+        }
+        return super.updateCustomBlockEntityTag(level, player, blockPos, itemStack);
     }
 
     // <editor-fold desc="Copied from BlockItem Parent">

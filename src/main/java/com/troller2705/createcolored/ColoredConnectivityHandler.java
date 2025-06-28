@@ -47,39 +47,38 @@ public class ColoredConnectivityHandler
         int minY = (mainAxis != Direction.Axis.Y ? Integer.MAX_VALUE : Integer.MIN_VALUE);
         int minZ = (mainAxis == Direction.Axis.Y ? Integer.MAX_VALUE : Integer.MIN_VALUE);
 
-        //Find minimum values for each coordinate
         for (T be : frontier) {
-            BlockPos pos = be.getPos();
+            BlockPos pos = be.getBlockPos();
             minX = Math.min(pos.getX(), minX);
             minY = Math.min(pos.getY(), minY);
             minZ = Math.min(pos.getZ(), minZ);
         }
-
-        //Account for structure size
-        int maxWidth = frontier.get(0).getMaxWidth();
-        if (mainAxis == Direction.Axis.Y) {
-            minX -= maxWidth;
-            minZ -= maxWidth;
-        } else {
-            minY -= maxWidth;
-        }
+        if (mainAxis == Direction.Axis.Y)
+            minX -= frontier.get(0)
+                    .getMaxWidth();
+        if (mainAxis != Direction.Axis.Y)
+            minY -= frontier.get(0)
+                    .getMaxWidth();
+        if (mainAxis == Direction.Axis.Y)
+            minZ -= frontier.get(0)
+                    .getMaxWidth();
 
         while (!frontier.isEmpty()) {
             T part = frontier.remove(0);
-            BlockPos partPos = part.getPos();
+            BlockPos partPos = part.getBlockPos();
             if (visited.contains(partPos))
                 continue;
 
             visited.add(partPos);
+
             int amount = tryToFormNewMulti(part, cache, true);
             if (amount > 1) {
                 creationQueue.add(Pair.of(amount, part));
             }
 
-            //Add surrounding block entities
             for (Direction.Axis axis : Iterate.axes) {
                 Direction dir = Direction.get(Direction.AxisDirection.NEGATIVE, axis);
-                BlockPos next = partPos.offset(dir.getNormal());
+                BlockPos next = partPos.relative(dir);
 
                 if (next.getX() <= minX || next.getY() <= minY || next.getZ() <= minZ)
                     continue;
@@ -90,8 +89,6 @@ public class ColoredConnectivityHandler
                     continue;
                 if (nextBe.isRemoved())
                     continue;
-                if (!part.canConnectWith(next, level))
-                    continue;
                 frontier.add(nextBe);
             }
         }
@@ -100,10 +97,10 @@ public class ColoredConnectivityHandler
         while (!creationQueue.isEmpty()) {
             Pair<Integer, T> next = creationQueue.poll();
             T toCreate = next.getValue();
-            if (visited.contains(toCreate.getPos()))
+            if (visited.contains(toCreate.getBlockPos()))
                 continue;
 
-            visited.add(toCreate.getPos());
+            visited.add(toCreate.getBlockPos());
             tryToFormNewMulti(toCreate, cache, false);
         }
     }
@@ -317,7 +314,7 @@ public class ColoredConnectivityHandler
         if (width == 1 && height == 1)
             return;
 
-        BlockPos origin = be.getPos();
+        BlockPos origin = be.getBlockPos();
         List<T> frontier = new ArrayList<>();
         Direction.Axis axis = be.getMainConnectionAxis();
 
@@ -378,8 +375,14 @@ public class ColoredConnectivityHandler
                 }
             }
         }
+
+        if (be instanceof IMultiBlockEntityContainer.Inventory inv && inv.hasInventory())
+            be.getLevel().invalidateCapabilities(be.getBlockPos());
+        if (be instanceof IMultiBlockEntityContainer.Fluid fluid && fluid.hasTank())
+            be.getLevel().invalidateCapabilities(be.getBlockPos());
+
         if (tryReconnect)
-            formMulti(be.getType(), level, cache == null ? new SearchCache<>() : cache, frontier);
+            formMulti(be.getType(), level, cache == null ? new ColoredConnectivityHandler.SearchCache<>() : cache, frontier);
     }
 
     private static class SearchCache<T extends BlockEntity & IConnectableBlockEntity> {

@@ -1,5 +1,6 @@
 package com.troller2705.createcolored.datagen;
 
+import com.simibubi.create.foundation.data.AssetLookup;
 import com.troller2705.createcolored.content.block.ColoredFluidPipeBlock;
 import com.troller2705.createcolored.content.block.ColoredFluidTankBlock;
 import com.google.common.collect.ImmutableList;
@@ -15,6 +16,7 @@ import net.createmod.catnip.math.Pointing;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -27,13 +29,19 @@ import java.util.Map;
 
 public class ColoredBlockStateGen {
     public static <P extends ColoredFluidTankBlock> NonNullBiConsumer<DataGenContext<Block, P>, RegistrateBlockstateProvider> coloredTank(DyeColor color) {
-        return (c, p) -> {
+        return (ctx, provider) -> {
             String colorName = color.getName();
-            String coloredPath = "block/colored_fluid_tank/" + c.getName() + "/";
+            String coloredPath = "block/colored_fluid_tank/" + ctx.getName() + "/";
             String path = "block/fluid_tank/";
 
-            p.getVariantBuilder(c.getEntry())
-                    .forAllStates(state -> {
+            provider.getVariantBuilder(ctx.getEntry())
+                    .forAllStates(state -> ConfiguredModel.builder()
+                            .modelFile(getModel(ctx, provider, state, color))
+                            .build())
+                    ;
+
+            /*
+            * .forAllStates(state -> {
                         Boolean top = state.getValue(ColoredFluidTankBlock.TOP);
                         Boolean bottom = state.getValue(ColoredFluidTankBlock.BOTTOM);
                         FluidTankBlock.Shape shape = state.getValue(ColoredFluidTankBlock.SHAPE);
@@ -48,21 +56,51 @@ public class ColoredBlockStateGen {
 
                         //Create model
                         String modelName = "block_" + shapeName + (shape == FluidTankBlock.Shape.PLAIN ? "" : "_" + shape.name());
-                        ModelFile model = p.models()
+                        ModelFile model = provider.models()
                                 .withExistingParent(coloredPath + modelName, Create.asResource(path + modelName))
-                                .texture("0", p.modLoc("block/fluid_tank_top/" + colorName))
-                                .texture("1", p.modLoc("block/fluid_tank/" + colorName))
-                                .texture("3", p.modLoc("block/fluid_tank_window/" + colorName))
-                                .texture("4", p.modLoc("block/fluid_tank_inner/" + colorName))
-                                .texture("5", p.modLoc("block/fluid_tank_window_single/" + colorName))
-                                .texture("particle", p.modLoc("block/fluid_tank/" + colorName));
+                                .texture("0", provider.modLoc("block/fluid_tank_top/" + colorName))
+                                .texture("1", provider.modLoc("block/fluid_tank/" + colorName))
+                                .texture("3", provider.modLoc("block/fluid_tank_window/" + colorName))
+                                .texture("4", provider.modLoc("block/fluid_tank_inner/" + colorName))
+                                .texture("5", provider.modLoc("block/fluid_tank_window_single/" + colorName))
+                                .texture("particle", provider.modLoc("block/fluid_tank/" + colorName));
 
                         return ConfiguredModel.builder()
                                 .modelFile(model)
                                 .build();
-                    });
+                    })
+            * */
 
         };
+    }
+
+    private static <P extends ColoredFluidTankBlock> ModelFile getModel(DataGenContext<Block, P> ctx, RegistrateBlockstateProvider provider, BlockState state, DyeColor color){
+        Boolean top = state.getValue(ColoredFluidTankBlock.TOP);
+        Boolean bottom = state.getValue(ColoredFluidTankBlock.BOTTOM);
+        FluidTankBlock.Shape shape = state.getValue(ColoredFluidTankBlock.SHAPE);
+        String colorName = color.getName();
+
+        String shapeName = "middle";
+        if (top && bottom)
+            shapeName = "single";
+        else if (top)
+            shapeName = "top";
+        else if (bottom)
+            shapeName = "bottom";
+
+        String modelName = shapeName + (shape == FluidTankBlock.Shape.PLAIN ? "" : "_" + shape.getSerializedName());
+
+        return provider.models()
+                .getExistingFile(provider.modLoc("block/" + ctx.getName() + "/" + colorName + "_fluid_tank" + "/block_" + modelName));
+
+//        return provider.models()
+//                .withExistingParent(modelName, provider.modLoc("block/fluid_tank/block_" + modelName))
+//                .texture("0", provider.modLoc("block/casing/" + colorName))
+//                .texture("1", provider.modLoc("block/fluid_tank/" + colorName))
+//                .texture("3", provider.modLoc("block/fluid_tank_window/" + colorName))
+//                .texture("4", provider.modLoc("block/casing/" + colorName))
+//                .texture("5", provider.modLoc("block/fluid_tank_window_single/" + colorName))
+//                .texture("particle", provider.modLoc("block/fluid_tank/" + colorName));
     }
 
     public static <P extends ColoredFluidPipeBlock> NonNullBiConsumer<DataGenContext<Block, P>, RegistrateBlockstateProvider> coloredPipe(DyeColor color) {

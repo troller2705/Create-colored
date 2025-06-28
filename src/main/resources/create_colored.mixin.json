@@ -1,9 +1,9 @@
 {
 	"required": true,
 	"package": "com.troller2705.createcolored.mixin",
-	"plugin": "com.troller2705.createcolored.mixin.MixinPlugin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
+		"SteamEngineBlockEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

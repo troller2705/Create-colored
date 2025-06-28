@@ -8,6 +8,7 @@ import com.simibubi.create.content.fluids.pipes.*;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
+import com.troller2705.createcolored.content.blockEntities.ColoredFluidTankBlockEntity;
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -62,6 +63,7 @@ public class ColoredFluidPipeBlock extends FluidPipeBlock implements IColoredBlo
         if(ColoredFluidTankBlock.isColoredTank(neighbourState)){
             ColoredFluidPipeBlock block = (ColoredFluidPipeBlock) state.getBlock();
             ColoredFluidTankBlock other = (ColoredFluidTankBlock) neighbourState.getBlock();
+
             if(block.color != other.getColor())
                 return false;
         }

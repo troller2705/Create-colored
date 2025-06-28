@@ -1,11 +1,11 @@
 {
-  "parent": "create:block/fluid_tank/block_middle_window_sw",
-  "textures": {
-    "0": "create_colored:block/fluid_tank_top/cyan",
-    "1": "create_colored:block/fluid_tank/cyan",
-    "3": "create_colored:block/fluid_tank_window/cyan",
-    "4": "create_colored:block/fluid_tank_inner/cyan",
-    "5": "create_colored:block/fluid_tank_window_single/cyan",
-    "particle": "create_colored:block/fluid_tank/cyan"
-  }
+    "parent": "create:block/fluid_tank/block_middle_window_sw",
+    "textures": {
+        "0": "create_colored:block/fluid_tank/cyan/fluid_tank_top",
+        "1": "create_colored:block/fluid_tank/cyan/fluid_tank",
+        "3": "create_colored:block/fluid_tank/cyan/fluid_tank_window",
+        "4": "create_colored:block/fluid_tank/cyan/fluid_tank_inner",
+        "5": "create_colored:block/fluid_tank/cyan/fluid_tank_window_single",
+        "particle": "create_colored:block/fluid_tank/cyan/fluid_tank"
+    }
 }

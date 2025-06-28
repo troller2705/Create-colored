@@ -1,10 +1,10 @@
 {
   "parent": "create:item/fluid_tank",
   "textures": {
-    "0": "create_colored:block/fluid_tank_top/pink",
-    "1": "create_colored:block/fluid_tank/pink",
-    "3": "create_colored:block/fluid_tank_window/pink",
-    "4": "create_colored:block/fluid_tank_inner/pink",
-    "5": "create_colored:block/fluid_tank_window_single/pink"
+    "0": "create_colored:block/fluid_tank/pink/fluid_tank_top",
+    "1": "create_colored:block/fluid_tank/pink/fluid_tank",
+    "3": "create_colored:block/fluid_tank/pink/fluid_tank_window",
+    "4": "create_colored:block/fluid_tank/pink/fluid_tank_inner",
+    "5": "create_colored:block/fluid_tank/pink/fluid_tank_window_single"
   }
 }

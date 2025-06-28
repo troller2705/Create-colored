@@ -8,12 +8,15 @@ import com.troller2705.createcolored.content.block.ColoredBlocks;
 import com.troller2705.createcolored.content.blockEntities.ColoredBlockEntities;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -45,6 +48,8 @@ public class CreateColored {
         REGISTRATE.registerEventListeners(modEventBus);
 
         CREATIVE_MODE_TABS.register(modEventBus);
+
+//        com.simibubi.create.AllBlocks
 
         ColoredTags.initialize();
         ColoredBlocks.initialize();

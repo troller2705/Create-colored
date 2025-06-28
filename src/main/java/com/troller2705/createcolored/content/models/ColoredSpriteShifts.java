@@ -29,10 +29,10 @@ public class ColoredSpriteShifts {
     }
 
     private static CTSpriteShiftEntry getColoredCT(CTType type, String blockTextureName, DyeColor color) {
-        String basePath = "block/" + blockTextureName;
-        String originalTexturePath = basePath + "/" + color.getName();
-        String connectedTexturePath = basePath + "_connected/" + color.getName();
-        return CTSpriteShifter.getCT(type, Create.asResource(originalTexturePath),
+        String basePath = "block/fluid_tank/" + color.getName();
+        String originalTexturePath = basePath + "/" + blockTextureName;
+        String connectedTexturePath = basePath + "/" + blockTextureName + "_connected";
+        return CTSpriteShifter.getCT(type, CreateColored.asResource(originalTexturePath),
                 CreateColored.asResource(connectedTexturePath));
     }
 

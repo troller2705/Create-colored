@@ -2,10 +2,12 @@ package com.troller2705.createcolored.content.blockEntities;
 
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import com.troller2705.createcolored.ColoredConnectivityHandler;
 import com.troller2705.createcolored.IConnectableBlockEntity;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
+import com.troller2705.createcolored.content.block.ColoredFluidTankBlock;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
