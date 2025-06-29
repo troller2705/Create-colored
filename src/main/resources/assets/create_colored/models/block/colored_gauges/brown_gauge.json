@@ -1,0 +1,7 @@
+﻿{
+  "parent": "create:block/steam_engine/gauge",
+  "textures": {
+    "0": "create_colored:block/boiler_gauge/brown",
+    "particle": "create_colored:block/boiler_gauge/brown"
+  }
+}

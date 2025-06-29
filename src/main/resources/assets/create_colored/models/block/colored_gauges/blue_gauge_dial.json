@@ -1,0 +1,7 @@
+﻿{
+  "parent": "create:block/steam_engine/gauge_dial",
+  "textures": {
+    "0": "create_colored:block/boiler_gauge/blue",
+    "particle": "create_colored:block/boiler_gauge/blue"
+  }
+}
