@@ -11,6 +11,9 @@ import com.troller2705.createcolored.content.blockEntities.ColoredFluidTankBlock
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,14 +27,20 @@ import net.minecraft.world.level.Level;
 
 import net.minecraft.world.item.DyeColor;
 
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class ColoredFluidTankBlock extends FluidTankBlock {
+public class ColoredFluidTankBlock extends FluidTankBlock implements IColoredBlock {
 
     private final DyeColor color;
 
     public DyeColor getColor(){
         return color;
+    }
+
+    @Override
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult ray) {
+        return InteractionResult.PASS;
     }
 
     public static ColoredFluidTankBlock regular(Properties properties, DyeColor color){

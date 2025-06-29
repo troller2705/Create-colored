@@ -20,9 +20,15 @@ public class ColoredPartials {
     public static final Map<FluidTransportBehaviour.AttachmentTypes.ComponentPartials, Map<DyeColor, Map<String, PartialModel>>> COLORED_PIPE_ATTACHMENTS = new EnumMap<>(
             FluidTransportBehaviour.AttachmentTypes.ComponentPartials.class);
 
+    public static final Map<DyeColor, PartialModel> COLORED_BOILER_GAUGE = new EnumMap<>(DyeColor.class);
+    public static final Map<DyeColor, PartialModel> COLORED_BOILER_GAUGE_DIAL = new EnumMap<>(DyeColor.class);
+
     static {
         for (DyeColor color : DyeColor.values()) {
             COLORED_FLUID_PIPE_CASINGS.put(color, block("colored_fluid_pipe/" + color.getName() + "_fluid_pipe/casing"));
+
+            COLORED_BOILER_GAUGE.put(color, block("colored_gauges/" + color.getName() + "_gauge"));
+            COLORED_BOILER_GAUGE_DIAL.put(color, block("colored_gauges/" + color.getName() + "_gauge_dial"));
         }
     }
 

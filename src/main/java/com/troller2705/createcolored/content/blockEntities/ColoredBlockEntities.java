@@ -2,9 +2,8 @@ package com.troller2705.createcolored.content.blockEntities;
 
 import com.troller2705.createcolored.CreateColored;
 import com.troller2705.createcolored.content.block.ColoredBlocks;
+import com.troller2705.createcolored.content.models.ColoredFluidTankRenderer;
 import com.simibubi.create.content.fluids.pipes.TransparentStraightPipeRenderer;
-import com.simibubi.create.content.fluids.tank.FluidTankRenderer;
-import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
 public class ColoredBlockEntities {
@@ -17,7 +16,7 @@ public class ColoredBlockEntities {
     public static final BlockEntityEntry<ColoredFluidTankBlockEntity> COLORED_FLUID_TANK_ENTITY = CreateColored.REGISTRATE
             .blockEntity("fluid_tank", ColoredFluidTankBlockEntity::new)
             .validBlocks(ColoredBlocks.DYED_FLUID_TANKS.toArray())
-            .renderer(() -> FluidTankRenderer::new)
+            .renderer(() -> ColoredFluidTankRenderer::new)
             .register();
 
     public static final BlockEntityEntry<ColoredFluidPipeBlockEntity> COLORED_ENCASED_FLUID_PIPE = CreateColored.REGISTRATE
